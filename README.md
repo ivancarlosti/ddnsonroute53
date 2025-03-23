@@ -36,12 +36,12 @@ IAM required policy:
                 "route53:ListResourceRecordSets"
             ],
             "Resource": [
-                "arn:aws:route53:::hostedzone/Z0038949JQ49I13U3L5S",
+                "arn:aws:route53:::hostedzone/<yourzoneid>",
                 "*"
             ],
             "Condition": {
                 "ForAllValues:StringLike": {
-                    "route53:ChangeResourceRecordSetsNormalizedRecordNames": "dns.icc.gg."
+                    "route53:ChangeResourceRecordSetsNormalizedRecordNames": "subdomain.example.com."
                 }
             }
         },
