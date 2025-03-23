@@ -7,9 +7,9 @@ Please help funding the project.
 
 Requirement:
 
-MySQL/MariaDB
-PHP 8+
-HTTP server
+* MySQL/MariaDB
+* PHP 8+
+* HTTP server
 
 or
 
