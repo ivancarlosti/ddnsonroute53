@@ -24,7 +24,7 @@ jobs:
         run: mkdir -p ./aws
 
       - name: Uncompress ZIP file
-        run: unzip aws.zip -d ./aws
+        run: unzip -o aws.zip -d ./aws
 
       - name: Clean up
         run: rm aws.zip
