@@ -17,11 +17,11 @@ or
 
 Setup instructions:
 
-Set database information on `dbconfig.php`
-Run `/setup.php` on browser to set username and password
-Run `/index.php` on browser to login
-Access `Manage AWS Credentials` menu
-Fill required fields
+* Set database information on `dbconfig.php`
+* Run `/setup.php` on browser to set username and password
+* Run `/index.php` on browser to login
+* Access `Manage AWS Credentials` menu
+* Fill required fields
 
 IAM required policy:
 
