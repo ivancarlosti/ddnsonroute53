@@ -58,5 +58,7 @@ IAM required policy:
 ```
 
 DDNS update format (Friendly format tested on TP-Link Omada routers):
+
 `https://[username]:password@example.com/update.php?hostname=[domain]&myip=[IPv4]`
+
 To simplify the process, `[domain]` is also used as `[username]`.
