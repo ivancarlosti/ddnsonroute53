@@ -30,9 +30,10 @@ jobs:
         run: rm aws.zip
 
       - name: Commit changes
+        continue-on-error: true
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add .
-          git commit -m "Uncompress AWS SDK"
-          git push
+          git commit -m "Uncompress AWS SDK" || echo "No changes to commit"
+          git push || echo "No changes to push"
