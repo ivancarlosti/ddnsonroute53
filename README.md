@@ -1,6 +1,10 @@
 # DDNS on Route53
 Router friendly client to update AWS Route53 entries for Dynamic DNS funtionality
 
+<a target="_blank" href="https://github.com/ivancarlosti/ddnsonroute53"><img src="https://img.shields.io/github/stars/ivancarlosti/ddnsonroute53?style=flat" /></a>
+<a target="_blank" href="https://github.com/ivancarlosti/ddnsonroute53"><img src="https://img.shields.io/github/last-commit/ivancarlosti/ddnsonroute53" /></a>
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/ivancarlosti?label=GitHub%20Sponsors)](https://github.com/sponsors/ivancarlosti)
+
 Please help funding the project.
 
 `/aws` folder comes from https://github.com/aws/aws-sdk-php/releases, package `aws.zip`.
