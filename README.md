@@ -17,6 +17,7 @@ or
 
 Setup instructions:
 
+* Save the project on your server (download [here](https://github.com/ivancarlosti/gwauditor/zipball/master))
 * Set database information on `dbconfig.php`
 * Run `/setup.php` on browser to set username and password
 * Run `/index.php` on browser to login
