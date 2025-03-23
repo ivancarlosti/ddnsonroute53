@@ -1,0 +1,35 @@
+name: Uncompress AWS SDK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  uncompress:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Download AWS SDK ZIP
+        run: wget https://github.com/aws/aws-sdk-php/releases/download/3.342.11/aws.zip -O aws.zip
+
+      - name: Create /aws directory
+        run: mkdir -p ./aws
+
+      - name: Uncompress ZIP file
+        run: unzip aws.zip -d ./aws
+
+      - name: Clean up
+        run: rm aws.zip
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add .
+          git commit -m "Uncompress AWS SDK"
+          git push
