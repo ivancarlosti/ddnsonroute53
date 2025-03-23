@@ -58,7 +58,7 @@ IAM required policy, note that this policy restricts access to only manage subdo
 }
 ```
 
-DDNS update format (Friendly format tested on TP-Link Omada routers):
+DDNS cURL update format (friendly format tested on TP-Link Omada routers):
 
 `https://[username]:[password]@example.com/update.php?hostname=[domain]&myip=[IPv4]`
 
