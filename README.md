@@ -37,8 +37,7 @@ IAM required policy, note that this policy restricts access to only manage subdo
                 "route53:ListResourceRecordSets"
             ],
             "Resource": [
-                "arn:aws:route53:::hostedzone/YOURZONEID",
-                "*"
+                "arn:aws:route53:::hostedzone/YOURZONEID"
             ],
             "Condition": {
                 "ForAllValues:StringLike": {
