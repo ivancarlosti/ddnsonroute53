@@ -23,7 +23,7 @@ Setup instructions:
 * Access `Manage AWS Credentials` menu and fill required fields
 * Access `Manage DDNS Entries` to add, edit and delete DDNS entries
 
-IAM required policy:
+IAM required policy, note that this policy restricts access to only manage subdomains from `subdomain.example.com`, remove the condition if you want to use root domain. Remember do update `YOURZONEID` value to related domain zone ID and `subdomain.example.com.` to your subdomain:
 
 ```
 {
@@ -36,7 +36,7 @@ IAM required policy:
                 "route53:ListResourceRecordSets"
             ],
             "Resource": [
-                "arn:aws:route53:::hostedzone/<yourzoneid>",
+                "arn:aws:route53:::hostedzone/YOURZONEID",
                 "*"
             ],
             "Condition": {
