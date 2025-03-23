@@ -68,4 +68,4 @@ DDNS cURL update format (friendly format tested on TP-Link Omada routers):
 
 To simplify the process, `[domain]` is also used as `[username]`.
 
-Omada Update URL: `https://[USERNAME]:[PASSWORD]@dns.icc.gg/update.php?hostname=[DOMAIN]&myip=[IP]`
+Omada Update URL: `https://[USERNAME]:[PASSWORD]@example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
