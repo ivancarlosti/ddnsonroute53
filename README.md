@@ -20,8 +20,8 @@ Setup instructions:
 * Set database information on `dbconfig.php`
 * Run `/setup.php` on browser to set username and password
 * Run `/index.php` on browser to login
-* Access `Manage AWS Credentials` menu
-* Fill required fields
+* Access `Manage AWS Credentials` menu and fill required fields
+* Access `Manage DDNS Entries` to add, edit and delete DDNS entries
 
 IAM required policy:
 
