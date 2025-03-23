@@ -13,7 +13,7 @@ Requirement:
 
 or
 
-Docker Compose
+* Docker Compose
 
 Setup instructions:
 
