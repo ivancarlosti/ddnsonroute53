@@ -1,6 +1,8 @@
 # DDNS on Route53
 Router friendly client to update AWS Route53 entries for Dynamic DNS funtionality
 
+Please help funding the project.
+
 /aws folder comes from https://github.com/aws/aws-sdk-php/releases , package aws.zip.
 
 Requirement:
