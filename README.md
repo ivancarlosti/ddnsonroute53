@@ -3,7 +3,7 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 
 Please help funding the project.
 
-/aws folder comes from https://github.com/aws/aws-sdk-php/releases , package aws.zip.
+`/aws` folder comes from https://github.com/aws/aws-sdk-php/releases, package `aws.zip`.
 
 Requirement:
 
@@ -17,9 +17,9 @@ or
 
 Setup instructions:
 
-Set database information on dbconfig.php
-Run /setup.exe on browser to set username and password
-Run /index.php on browser to login
+Set database information on `dbconfig.php`
+Run `/setup.php` on browser to set username and password
+Run `/index.php` on browser to login
 Access `Manage AWS Credentials` menu
 Fill required fields
 
