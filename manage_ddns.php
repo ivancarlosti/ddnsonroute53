@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
     } elseif (!filter_var($initial_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
         echo "Invalid IPv4 address.";
     } else {
-        // Check if the DDNS FQDN is a subdomain of the approved FQDN
+        // Check if the DDNS FQDN is a subdomain of the approved FQDN (only for new entries)
         if (strpos($ddns_fqdn, $approved_fqdn) === false || !preg_match('/^[a-zA-Z0-9-]+\.' . preg_quote($approved_fqdn, '/') . '$/', $ddns_fqdn)) {
             echo "DDNS FQDN must be a subdomain of $approved_fqdn.";
         } else {
@@ -125,7 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_ip'])) {
     $new_ttl = $_POST['new_ttl']; // New TTL is required
 
     // Validate input
-    if (!filter_var($new_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+    if (empty($new_ip) || empty($new_ttl)) {
+        echo "IP and TTL are required.";
+    } elseif (!filter_var($new_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
         echo "Invalid IPv4 address.";
     } else {
         // Fetch the DDNS entry
@@ -259,26 +261,11 @@ if ($result = $link->query($sql)) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         $(document).ready(function() {
-            const approvedFqdn = "<?php echo $approved_fqdn; ?>";
-
-            // Validate DDNS FQDN before form submission
-            $('form').on('submit', function(event) {
-                const ddnsFqdn = $('input[name="ddns_fqdn"]').val();
-                const pattern = new RegExp(`^[a-zA-Z0-9-]+\\.${approvedFqdn.replace(/\./g, '\\.')}$`);
-
-                if (!pattern.test(ddnsFqdn)) {
-                    alert(`DDNS FQDN must be a subdomain of ${approvedFqdn}`);
-                    event.preventDefault(); // Prevent form submission
-                }
-            });
-
-            // Mask for IPv4 address
-            $('input[name="initial_ip"], input[name="new_ip"]').mask('0ZZ.0ZZ.0ZZ.0ZZ', {
-                translation: {
-                    'Z': {
-                        pattern: /[0-9]/,
-                        optional: true
-                    }
+            // Mask for email address
+            $('input[name="username"]').on('input', function() {
+                const value = $(this).val();
+                if (!/^[^@]+@[^@]+\.[^@]+$/.test(value)) {
+                    $(this).val(value.replace(/[^a-zA-Z0-9@._-]/g, ''));
                 }
             });
         });
@@ -293,7 +280,7 @@ if ($result = $link->query($sql)) {
         <label>DDNS Password:</label>
         <input type="password" name="ddns_password" required><br>
         <label>Initial IP:</label>
-        <input type="text" name="initial_ip" pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" required><br>
+        <input type="text" name="initial_ip" required><br>
         <label>TTL (Time to Live):</label>
         <input type="number" name="ttl" min="1" required><br>
         <input type="submit" name="add_ddns" value="Add DDNS Entry">
@@ -322,7 +309,7 @@ if ($result = $link->query($sql)) {
             <td>
                 <form method="post" style="display:inline;">
                     <input type="hidden" name="ddns_id" value="<?php echo $entry['id']; ?>">
-                    <input type="text" name="new_ip" placeholder="New IP" pattern="^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$" required><br>
+                    <input type="text" name="new_ip" placeholder="New IP" required><br>
                     <input type="number" name="new_ttl" placeholder="New TTL" min="1" required><br>
                     <input type="submit" name="update_ip" value="Update IP/TTL">
                 </form>

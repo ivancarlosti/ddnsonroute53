@@ -19,14 +19,14 @@ if (empty($ddns_fqdn) || empty($myip) || empty($ddns_password)) {
 }
 
 // Fetch the DDNS entry from the database
-$sql = "SELECT id, ddns_fqdn, ddns_password, last_ipv4 FROM ddns_entries WHERE ddns_fqdn = ? AND ddns_password = ?";
+$sql = "SELECT id, ddns_fqdn, ddns_password, last_ipv4, ttl FROM ddns_entries WHERE ddns_fqdn = ? AND ddns_password = ?";
 if ($stmt = $link->prepare($sql)) {
     $stmt->bind_param("ss", $ddns_fqdn, $ddns_password);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows == 1) {
-        $stmt->bind_result($id, $ddns_fqdn, $ddns_password, $last_ipv4);
+        $stmt->bind_result($id, $ddns_fqdn, $ddns_password, $last_ipv4, $ttl);
         $stmt->fetch();
 
         // Check if the IP has changed
@@ -58,7 +58,7 @@ if ($stmt = $link->prepare($sql)) {
                             'ResourceRecordSet' => [
                                 'Name' => $ddns_fqdn,
                                 'Type' => 'A',
-                                'TTL'  => 300,
+                                'TTL'  => $ttl, // Use the TTL value from the database
                                 'ResourceRecords' => [
                                     [
                                         'Value' => $myip,
