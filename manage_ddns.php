@@ -11,6 +11,13 @@ require 'aws/aws-autoloader.php';
 use Aws\Route53\Route53Client;
 use Aws\Exception\AwsException;
 
+// Clean up logs older than 30 days
+$cleanup_sql = "CALL CleanupOldLogs()";
+if ($cleanup_stmt = $link->prepare($cleanup_sql)) {
+    $cleanup_stmt->execute();
+    $cleanup_stmt->close();
+}
+
 // Fetch the approved FQDN from the database
 $approved_fqdn = '';
 $aws_sql = "SELECT approved_fqdn, region, access_key_id, secret_access_key, hosted_zone_id FROM aws_credentials LIMIT 1";
@@ -48,8 +55,8 @@ try {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
     $ddns_fqdn = $_POST['ddns_fqdn'];
     $ddns_password = $_POST['ddns_password'];
-    $initial_ip = $_POST['initial_ip']; // Initial IP is required
-    $ttl = $_POST['ttl']; // TTL is required
+    $initial_ip = $_POST['initial_ip'];
+    $ttl = $_POST['ttl'];
 
     // Validate input
     if (empty($ddns_fqdn) || empty($ddns_password) || empty($initial_ip) || empty($ttl)) {
@@ -57,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
     } elseif (!filter_var($initial_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
         echo "Invalid IPv4 address.";
     } else {
-        // Check if the DDNS FQDN is a subdomain of the approved FQDN (only for new entries)
+        // Check if the DDNS FQDN is a subdomain of the approved FQDN
         if (strpos($ddns_fqdn, $approved_fqdn) === false || !preg_match('/^[a-zA-Z0-9-]+\.' . preg_quote($approved_fqdn, '/') . '$/', $ddns_fqdn)) {
             echo "DDNS FQDN must be a subdomain of $approved_fqdn.";
         } else {
@@ -77,12 +84,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
                             [
                                 'Action' => 'UPSERT',
                                 'ResourceRecordSet' => [
-                                    'Name' => $ddns_fqdn . '.', // Add trailing dot for FQDN
+                                    'Name' => $ddns_fqdn . '.',
                                     'Type' => 'A',
-                                    'TTL'  => (int)$ttl, // Use the provided TTL
+                                    'TTL'  => (int)$ttl,
                                     'ResourceRecords' => [
                                         [
-                                            'Value' => $initial_ip, // Use the provided IP
+                                            'Value' => $initial_ip,
                                         ],
                                     ],
                                 ],
@@ -102,6 +109,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
                         if ($insert_stmt = $link->prepare($insert_sql)) {
                             $insert_stmt->bind_param("sssi", $ddns_fqdn, $ddns_password, $initial_ip, $ttl);
                             if ($insert_stmt->execute()) {
+                                $ddns_entry_id = $insert_stmt->insert_id;
+
+                                // Log the action
+                                $action = 'add';
+                                $ip_address = $_SERVER['REMOTE_ADDR'];
+                                $details = "Added DDNS entry with FQDN: $ddns_fqdn, Initial IP: $initial_ip, TTL: $ttl";
+                                $log_sql = "INSERT INTO ddns_logs (ddns_entry_id, action, ip_address, details) VALUES (?, ?, ?, ?)";
+                                if ($log_stmt = $link->prepare($log_sql)) {
+                                    $log_stmt->bind_param("isss", $ddns_entry_id, $action, $ip_address, $details);
+                                    $log_stmt->execute();
+                                    $log_stmt->close();
+                                }
+
                                 echo "DDNS entry '$ddns_fqdn' added successfully!";
                             } else {
                                 echo "Error adding DDNS entry: " . $insert_stmt->error;
@@ -122,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_ip'])) {
     $ddns_id = $_POST['ddns_id'];
     $new_ip = $_POST['new_ip'];
-    $new_ttl = $_POST['new_ttl']; // New TTL is required
+    $new_ttl = $_POST['new_ttl'];
 
     // Validate input
     if (empty($new_ip) || empty($new_ttl)) {
@@ -146,9 +166,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_ip'])) {
                     [
                         'Action' => 'UPSERT',
                         'ResourceRecordSet' => [
-                            'Name' => $ddns_fqdn . '.', // Add trailing dot for FQDN
+                            'Name' => $ddns_fqdn . '.',
                             'Type' => 'A',
-                            'TTL'  => (int)$new_ttl, // Use the new TTL
+                            'TTL'  => (int)$new_ttl,
                             'ResourceRecords' => [
                                 [
                                     'Value' => $new_ip,
@@ -171,6 +191,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_ip'])) {
                 if ($update_stmt = $link->prepare($update_sql)) {
                     $update_stmt->bind_param("sii", $new_ip, $new_ttl, $ddns_id);
                     if ($update_stmt->execute()) {
+                        // Log the action
+                        $action = 'update';
+                        $ip_address = $_SERVER['REMOTE_ADDR'];
+                        $details = "Updated IP: $new_ip, TTL: $new_ttl";
+                        $log_sql = "INSERT INTO ddns_logs (ddns_entry_id, action, ip_address, details) VALUES (?, ?, ?, ?)";
+                        if ($log_stmt = $link->prepare($log_sql)) {
+                            $log_stmt->bind_param("isss", $ddns_id, $action, $ip_address, $details);
+                            $log_stmt->execute();
+                            $log_stmt->close();
+                        }
+
                         echo "IP and TTL updated successfully for '$ddns_fqdn'!";
                     } else {
                         echo "Error updating IP and TTL: " . $update_stmt->error;
@@ -204,12 +235,12 @@ if (isset($_GET['delete'])) {
                 [
                     'Action' => 'DELETE',
                     'ResourceRecordSet' => [
-                        'Name' => $ddns_fqdn . '.', // Add trailing dot for FQDN
+                        'Name' => $ddns_fqdn . '.',
                         'Type' => 'A',
-                        'TTL'  => (int)$ttl, // Use the current TTL
+                        'TTL'  => (int)$ttl,
                         'ResourceRecords' => [
                             [
-                                'Value' => $last_ipv4, // Use the current IP address
+                                'Value' => $last_ipv4,
                             ],
                         ],
                     ],
@@ -229,6 +260,17 @@ if (isset($_GET['delete'])) {
             if ($delete_stmt = $link->prepare($delete_sql)) {
                 $delete_stmt->bind_param("i", $ddns_id);
                 if ($delete_stmt->execute()) {
+                    // Log the action
+                    $action = 'delete';
+                    $ip_address = $_SERVER['REMOTE_ADDR'];
+                    $details = "Deleted DDNS entry with FQDN: $ddns_fqdn, Last IP: $last_ipv4, TTL: $ttl";
+                    $log_sql = "INSERT INTO ddns_logs (ddns_entry_id, action, ip_address, details) VALUES (?, ?, ?, ?)";
+                    if ($log_stmt = $link->prepare($log_sql)) {
+                        $log_stmt->bind_param("isss", $ddns_id, $action, $ip_address, $details);
+                        $log_stmt->execute();
+                        $log_stmt->close();
+                    }
+
                     echo "DDNS entry deleted successfully and Route53 record removed!";
                 } else {
                     echo "Error deleting DDNS entry: " . $delete_stmt->error;
@@ -255,21 +297,8 @@ if ($result = $link->query($sql)) {
 <html>
 <head>
     <title>Manage DDNS Entries</title>
-    <!-- Add jQuery for input masking -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Add jQuery Mask Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Mask for email address
-            $('input[name="username"]').on('input', function() {
-                const value = $(this).val();
-                if (!/^[^@]+@[^@]+\.[^@]+$/.test(value)) {
-                    $(this).val(value.replace(/[^a-zA-Z0-9@._-]/g, ''));
-                }
-            });
-        });
-    </script>
 </head>
 <body>
     <h1>Manage DDNS Entries</h1>
@@ -297,6 +326,7 @@ if ($result = $link->query($sql)) {
             <th>Last Update</th>
             <th>Update IP/TTL</th>
             <th>Action</th>
+            <th>Logs</th>
         </tr>
         <?php foreach ($ddns_entries as $entry): ?>
         <tr>
@@ -316,6 +346,9 @@ if ($result = $link->query($sql)) {
             </td>
             <td>
                 <a href="manage_ddns.php?delete=<?php echo $entry['id']; ?>" onclick="return confirm('Are you sure you want to delete this DDNS entry?');">Delete</a>
+            </td>
+            <td>
+                <a href="view_logs.php?ddns_id=<?php echo $entry['id']; ?>">View Logs</a>
             </td>
         </tr>
         <?php endforeach; ?>

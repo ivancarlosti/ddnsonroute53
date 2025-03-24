@@ -1,12 +1,16 @@
 <?php
-// Include the database configuration
 include 'dbconfig.php';
-
-// Include the AWS SDK autoloader
 require 'aws/aws-autoloader.php';
 
 use Aws\Route53\Route53Client;
 use Aws\Exception\AwsException;
+
+// Clean up logs older than 30 days
+$cleanup_sql = "CALL CleanupOldLogs()";
+if ($cleanup_stmt = $link->prepare($cleanup_sql)) {
+    $cleanup_stmt->execute();
+    $cleanup_stmt->close();
+}
 
 // Extract the hostname and IP from the request
 $ddns_fqdn = $_GET['hostname'];
@@ -58,7 +62,7 @@ if ($stmt = $link->prepare($sql)) {
                             'ResourceRecordSet' => [
                                 'Name' => $ddns_fqdn,
                                 'Type' => 'A',
-                                'TTL'  => $ttl, // Use the TTL value from the database
+                                'TTL'  => $ttl,
                                 'ResourceRecords' => [
                                     [
                                         'Value' => $myip,
@@ -82,6 +86,17 @@ if ($stmt = $link->prepare($sql)) {
                         $update_stmt->bind_param("si", $myip, $id);
                         $update_stmt->execute();
                         $update_stmt->close();
+                    }
+
+                    // Log the action
+                    $action = 'update';
+                    $ip_address = $_SERVER['REMOTE_ADDR'];
+                    $details = "Updated IP: $myip";
+                    $log_sql = "INSERT INTO ddns_logs (ddns_entry_id, action, ip_address, details) VALUES (?, ?, ?, ?)";
+                    if ($log_stmt = $link->prepare($log_sql)) {
+                        $log_stmt->bind_param("isss", $id, $action, $ip_address, $details);
+                        $log_stmt->execute();
+                        $log_stmt->close();
                     }
 
                     echo "good"; // Success

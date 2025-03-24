@@ -1,9 +1,7 @@
 <?php
-// Suppress fatal errors for database connection issues
 error_reporting(0);
 ini_set('display_errors', 0);
 
-// Function to handle fatal errors
 function handleFatalError() {
     $error = error_get_last();
     if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
@@ -11,23 +9,18 @@ function handleFatalError() {
     }
 }
 
-// Register the shutdown function to catch fatal errors
 register_shutdown_function('handleFatalError');
 
-// Check if dbconfig.php exists
 if (!file_exists('dbconfig.php')) {
     die("The database configuration file (dbconfig.php) is missing. Please create it with the correct database credentials.");
 }
 
-// Include the database configuration
 include 'dbconfig.php';
 
-// Check if the database connection is successful
 if ($link === null || $link->connect_error) {
     die("Database connection failed. Please check the dbconfig.php file and ensure the database credentials are correct.");
 }
 
-// Check if the database is empty
 $tables = [];
 $result = $link->query("SHOW TABLES");
 if ($result) {
@@ -37,26 +30,21 @@ if ($result) {
     $result->free();
 }
 
-// If the database is not empty, warn the user
 if (!empty($tables)) {
     die("An installation already exists in this database. Please clean up the database or update the dbconfig.php file to use a new database.");
 }
 
-// Handle form submission to create the first admin user
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_admin'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Validate input
     if (empty($username) || empty($password)) {
         echo "Username and password are required.";
     } elseif (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
         echo "Username must be a valid email address.";
     } else {
-        // Hash the password
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-        // Create the required tables
         $create_tables_sql = [
             "CREATE TABLE users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -78,21 +66,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_admin'])) {
                 last_ipv4 VARCHAR(15),
                 ttl INT NOT NULL DEFAULT 300,
                 last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            )"
+            )",
+            "CREATE TABLE ddns_logs (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                ddns_entry_id INT NOT NULL,
+                action VARCHAR(50) NOT NULL,
+                ip_address VARCHAR(15),
+                details TEXT,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (ddns_entry_id) REFERENCES ddns_entries(id) ON DELETE CASCADE
+            )",
+            "CREATE TABLE recaptcha_keys (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                site_key VARCHAR(255) NOT NULL,
+                secret_key VARCHAR(255) NOT NULL
+            )",
+            "CREATE PROCEDURE CleanupOldLogs()
+            BEGIN
+                DELETE FROM ddns_logs WHERE timestamp < NOW() - INTERVAL 30 DAY;
+            END"
         ];
 
-        // Execute the table creation queries
         $success = true;
         foreach ($create_tables_sql as $sql) {
             if (!$link->query($sql)) {
                 $success = false;
-                echo "Error creating table: " . $link->error;
+                echo "Error creating table or procedure: " . $link->error;
                 break;
             }
         }
 
         if ($success) {
-            // Insert the first admin user
             $insert_sql = "INSERT INTO users (username, password_hash) VALUES (?, ?)";
             if ($stmt = $link->prepare($insert_sql)) {
                 $stmt->bind_param("ss", $username, $password_hash);
@@ -113,21 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_admin'])) {
 <html>
 <head>
     <title>Setup</title>
-    <!-- Add jQuery for input masking -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Add jQuery Mask Plugin -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Mask for email address
-            $('input[name="username"]').on('input', function() {
-                const value = $(this).val();
-                if (!/^[^@]+@[^@]+\.[^@]+$/.test(value)) {
-                    $(this).val(value.replace(/[^a-zA-Z0-9@._-]/g, ''));
-                }
-            });
-        });
-    </script>
 </head>
 <body>
     <h1>Setup</h1>

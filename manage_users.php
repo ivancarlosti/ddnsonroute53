@@ -119,6 +119,42 @@ if (isset($_GET['delete'])) {
     }
 }
 
+// Handle form submission to add/edit reCAPTCHA keys
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_recaptcha'])) {
+    $site_key = $_POST['site_key'];
+    $secret_key = $_POST['secret_key'];
+
+    // Check if keys already exist
+    $check_sql = "SELECT id FROM recaptcha_keys LIMIT 1";
+    $result = $link->query($check_sql);
+
+    if ($result->num_rows > 0) {
+        // Update existing keys
+        $update_sql = "UPDATE recaptcha_keys SET site_key = ?, secret_key = ?";
+        if ($stmt = $link->prepare($update_sql)) {
+            $stmt->bind_param("ss", $site_key, $secret_key);
+            if ($stmt->execute()) {
+                echo "reCAPTCHA keys updated successfully!";
+            } else {
+                echo "Error updating reCAPTCHA keys: " . $stmt->error;
+            }
+            $stmt->close();
+        }
+    } else {
+        // Insert new keys
+        $insert_sql = "INSERT INTO recaptcha_keys (site_key, secret_key) VALUES (?, ?)";
+        if ($stmt = $link->prepare($insert_sql)) {
+            $stmt->bind_param("ss", $site_key, $secret_key);
+            if ($stmt->execute()) {
+                echo "reCAPTCHA keys added successfully!";
+            } else {
+                echo "Error adding reCAPTCHA keys: " . $stmt->error;
+            }
+            $stmt->close();
+        }
+    }
+}
+
 // Fetch all users from the database
 $sql = "SELECT id, username FROM users";
 $users = [];
@@ -126,6 +162,14 @@ if ($result = $link->query($sql)) {
     while ($row = $result->fetch_assoc()) {
         $users[] = $row;
     }
+    $result->free();
+}
+
+// Fetch existing reCAPTCHA keys
+$recaptcha_keys = [];
+$sql = "SELECT site_key, secret_key FROM recaptcha_keys LIMIT 1";
+if ($result = $link->query($sql)) {
+    $recaptcha_keys = $result->fetch_assoc();
     $result->free();
 }
 ?>
@@ -154,6 +198,15 @@ if ($result = $link->query($sql)) {
         <label>Password:</label>
         <input type="password" name="password" required><br>
         <input type="submit" name="add_user" value="Add User">
+    </form>
+
+    <h2>Manage reCAPTCHA Keys</h2>
+    <form method="post">
+        <label>Site Key:</label>
+        <input type="text" name="site_key" value="<?php echo $recaptcha_keys['site_key'] ?? ''; ?>" required><br>
+        <label>Secret Key:</label>
+        <input type="text" name="secret_key" value="<?php echo $recaptcha_keys['secret_key'] ?? ''; ?>" required><br>
+        <input type="submit" name="update_recaptcha" value="Update reCAPTCHA Keys">
     </form>
 
     <h2>User List</h2>
