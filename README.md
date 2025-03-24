@@ -73,5 +73,5 @@ Omada Update URL: `https://[USERNAME]:[PASSWORD]@example.com/update.php?hostname
 
 ToDo:
 
-* Update logs with 30 days retention
+* Warn user on index.php when the DB credentials are invalid
 * Dashboard beautification
