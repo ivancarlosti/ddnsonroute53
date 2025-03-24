@@ -24,7 +24,7 @@ services:
   # Git Auto-Cloner/Puller
   git:
     image: alpine/git:latest
-    container_name: ddnsonroute53-gitcloner
+    container_name: ddnsonroute53-git
     volumes:
       - ./www:/www
     working_dir: /www
@@ -36,6 +36,7 @@ services:
   # PHP + Apache Server
   php:
     image: php:apache
+    container_name: ddnsonroute53-php
     depends_on:
       db:
         condition: service_healthy
@@ -58,6 +59,7 @@ services:
   # Traefik Reverse Proxy
   traefik:
     image: traefik:v2.10
+    container_name: ddnsonroute53-traefik
     ports:
       - "80:80"
       - "443:443"
