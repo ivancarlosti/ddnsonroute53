@@ -1,4 +1,4 @@
-version: '3.8'
+name: ddnsonroute53
 
 services:
   # MariaDB Database
