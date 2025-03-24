@@ -74,5 +74,5 @@ Omada Update URL: `https://[USERNAME]:[PASSWORD]@example.com/update.php?hostname
 ToDo:
 
 * Warn user on index.php when the DB credentials are invalid
-* Dashboard beautification
+* Dashboard beautification, oncluding all other pages
 * Docker Compose samples with/without MariaDB and reverse proxy
