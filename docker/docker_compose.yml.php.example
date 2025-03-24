@@ -1,2 +1,23 @@
+name: ddnsonroute53
 
+services:
+  git:
+    image: alpine/git:latest
+    container_name: ddnsonroute53-gitcloner
+    volumes:
+      - ./www:/www
+    working_dir: /www
+    entrypoint: /bin/sh -c "while true; do if [ -d .git ]; then git pull; else git clone --recurse-submodules -j8 https://github.com/ivancarlosti/ddnsonroute53.git .; fi; sleep 600; done"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: yourproject-nginx
+    volumes:
+      - ./www:/usr/share/nginx/html
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - git
 php:apache
