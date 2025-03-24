@@ -27,7 +27,7 @@ Setup instructions:
 * Run `index.php` on browser to login
 * Access `Manage AWS Credentials` menu and fill required fields
 * Access `Manage DDNS Entries` to add, edit and delete DDNS entries
-* (optional) Access `Manage Users` to change user login, password, create new users, add reCAPTCHA credentials 
+* (optional) Access `Manage Users` to change user password, create new users, add/edit reCAPTCHA keys 
 
 IAM required policy, note that this policy restricts access to only manage subdomains from `subdomain.example.com`, remove the condition if you want to use root domain. Remember to update `YOURZONEID` value to related domain zone ID and `subdomain.example.com.` to your subdomain:
 
