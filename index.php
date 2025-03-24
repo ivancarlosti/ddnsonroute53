@@ -111,7 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <p style="color: red;"><?php echo $error; ?></p>
     <?php endif; ?>
     <form id="loginForm" action="index.php" method="post">
-        <label>Username:</label>
+        <label>Email address:</label>
         <input type="text" name="username" required><br>
         <label>Password:</label>
         <input type="password" name="password" required><br>
