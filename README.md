@@ -75,3 +75,4 @@ ToDo:
 
 * Warn user on index.php when the DB credentials are invalid
 * Dashboard beautification
+* Docker Compose samples with/without MariaDB and reverse proxy
