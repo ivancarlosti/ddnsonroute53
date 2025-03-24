@@ -44,13 +44,13 @@ services:
     volumes:
       - ./www:/var/www/html
     environment:
-      - DB_SERVER=db  # Uses Docker's internal DNS
+      - DB_SERVER=db
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.php.rule=Host(`yourdomain.com`)"
+      - "traefik.http.routers.php.rule=Host(`example.com`)"   # CHANGE IT TO YOUR DOMAIN
       - "traefik.http.routers.php.entrypoints=websecure"
       - "traefik.http.routers.php.tls.certresolver=letsencrypt"
     networks:
@@ -74,7 +74,7 @@ services:
       - --entrypoints.websecure.address=:443
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --certificatesresolvers.letsencrypt.acme.email=your@email.com
+      - --certificatesresolvers.letsencrypt.acme.email=your@email.com   # CHANGE IT TO YOUR EMAIL ADDRESS
       - --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme.json
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
     networks:
