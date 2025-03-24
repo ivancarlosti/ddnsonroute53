@@ -11,7 +11,7 @@ services:
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_PASSWORD=${DB_PASSWORD}
     volumes:
-      - ./db_data:/var/lib/mysql
+      - db_data:/var/lib/mysql
     networks:
       - web
     restart: unless-stopped
@@ -26,7 +26,7 @@ services:
     image: alpine/git:latest
     container_name: ddnsonroute53-gitcloner
     volumes:
-      - ./www:/www
+      - www:/www
     working_dir: /www
     entrypoint: /bin/sh -c "while true; do if [ -d .git ]; then git pull; else git clone --recurse-submodules -j8 https://github.com/ivancarlosti/ddnsonroute53.git .; fi; sleep 600; done"
     restart: unless-stopped
@@ -41,7 +41,7 @@ services:
         condition: service_healthy
       git:
     volumes:
-      - ./www:/var/www/html
+      - www:/var/www/html
     environment:
       - DB_SERVER=db  # Uses Docker's internal DNS
       - DB_USERNAME=${DB_USERNAME}
@@ -71,6 +71,7 @@ services:
 
 volumes:
   db_data:
+  www:
 
 networks:
   web:
