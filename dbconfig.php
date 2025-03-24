@@ -5,17 +5,6 @@ define('DB_USERNAME', 'YOURDBUSERNAME');
 define('DB_PASSWORD', 'YOURDBPASSWORD');
 define('DB_NAME', 'YOURDBNAME');
 
-// Suppress errors for the connection attempt
-error_reporting(0);
-ini_set('display_errors', 0);
-
 // Create the connection
 $link = @new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
-
-// Check for connection errors
-if ($link->connect_error) {
-    // Log the error and set $link to null
-    error_log("Database connection failed: " . $link->connect_error);
-    $link = null;
-}
 ?>
