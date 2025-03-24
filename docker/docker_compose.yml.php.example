@@ -10,9 +10,9 @@ services:
     entrypoint: /bin/sh -c "while true; do if [ -d .git ]; then git pull; else git clone --recurse-submodules -j8 https://github.com/ivancarlosti/ddnsonroute53.git .; fi; sleep 600; done"
     restart: unless-stopped
 
-  nginx:
-    image: nginx:alpine
-    container_name: yourproject-nginx
+  webserver:
+    image: php:apache
+    container_name: yourproject-webserver
     volumes:
       - ./www:/usr/share/nginx/html
     ports:
@@ -20,4 +20,4 @@ services:
     restart: unless-stopped
     depends_on:
       - git
-php:apache
+
