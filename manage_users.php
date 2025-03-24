@@ -193,7 +193,7 @@ if ($result = $link->query($sql)) {
 
     <h2>Add New User</h2>
     <form method="post">
-        <label>Email (Username):</label>
+        <label>Email address:</label>
         <input type="email" name="username" required><br>
         <label>Password:</label>
         <input type="password" name="password" required><br>
@@ -213,7 +213,7 @@ if ($result = $link->query($sql)) {
     <table border="1">
         <tr>
             <th>ID</th>
-            <th>Username (Email)</th>
+            <th>Email address</th>
             <th>Action</th>
         </tr>
         <?php foreach ($users as $user): ?>

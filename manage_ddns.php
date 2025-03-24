@@ -260,17 +260,7 @@ if (isset($_GET['delete'])) {
             if ($delete_stmt = $link->prepare($delete_sql)) {
                 $delete_stmt->bind_param("i", $ddns_id);
                 if ($delete_stmt->execute()) {
-                    // Log the action
-                    $action = 'delete';
-                    $ip_address = $_SERVER['REMOTE_ADDR'];
-                    $details = "Deleted DDNS entry with FQDN: $ddns_fqdn, Last IP: $last_ipv4, TTL: $ttl";
-                    $log_sql = "INSERT INTO ddns_logs (ddns_entry_id, action, ip_address, details) VALUES (?, ?, ?, ?)";
-                    if ($log_stmt = $link->prepare($log_sql)) {
-                        $log_stmt->bind_param("isss", $ddns_id, $action, $ip_address, $details);
-                        $log_stmt->execute();
-                        $log_stmt->close();
-                    }
-
+                    // Removed logging code here
                     echo "DDNS entry deleted successfully and Route53 record removed!";
                 } else {
                     echo "Error deleting DDNS entry: " . $delete_stmt->error;
@@ -299,6 +289,10 @@ if ($result = $link->query($sql)) {
     <title>Manage DDNS Entries</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <!-- DataTables JS -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 </head>
 <body>
     <h1>Manage DDNS Entries</h1>
@@ -316,44 +310,58 @@ if ($result = $link->query($sql)) {
     </form>
 
     <h2>DDNS Entries</h2>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>FQDN</th>
-            <th>Password</th>
-            <th>Last IPv4</th>
-            <th>TTL</th>
-            <th>Last Update</th>
-            <th>Update IP/TTL</th>
-            <th>Action</th>
-            <th>Logs</th>
-        </tr>
-        <?php foreach ($ddns_entries as $entry): ?>
-        <tr>
-            <td><?php echo $entry['id']; ?></td>
-            <td><?php echo htmlspecialchars($entry['ddns_fqdn']); ?></td>
-            <td><?php echo htmlspecialchars($entry['ddns_password']); ?></td>
-            <td><?php echo htmlspecialchars($entry['last_ipv4']); ?></td>
-            <td><?php echo htmlspecialchars($entry['ttl']); ?></td>
-            <td><?php echo htmlspecialchars($entry['last_update']); ?></td>
-            <td>
-                <form method="post" style="display:inline;">
-                    <input type="hidden" name="ddns_id" value="<?php echo $entry['id']; ?>">
-                    <input type="text" name="new_ip" placeholder="New IP" required><br>
-                    <input type="number" name="new_ttl" placeholder="New TTL" min="1" required><br>
-                    <input type="submit" name="update_ip" value="Update IP/TTL">
-                </form>
-            </td>
-            <td>
-                <a href="manage_ddns.php?delete=<?php echo $entry['id']; ?>" onclick="return confirm('Are you sure you want to delete this DDNS entry?');">Delete</a>
-            </td>
-            <td>
-                <a href="view_logs.php?ddns_id=<?php echo $entry['id']; ?>">View Logs</a>
-            </td>
-        </tr>
-        <?php endforeach; ?>
+    <table id="ddnsTable" border="1">
+        <thead>
+            <tr>
+                <th>FQDN</th>
+                <th>Password</th>
+                <th>Last IPv4</th>
+                <th>TTL</th>
+                <th>Last Update</th>
+                <th>Update IP/TTL</th>
+                <th>Logs</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($ddns_entries as $entry): ?>
+            <tr>
+                <td><?php echo htmlspecialchars($entry['ddns_fqdn']); ?></td>
+                <td><?php echo htmlspecialchars($entry['ddns_password']); ?></td>
+                <td><?php echo htmlspecialchars($entry['last_ipv4']); ?></td>
+                <td><?php echo htmlspecialchars($entry['ttl']); ?></td>
+                <td><?php echo htmlspecialchars($entry['last_update']); ?></td>
+                <td>
+                    <form method="post" style="display:inline;">
+                        <input type="hidden" name="ddns_id" value="<?php echo $entry['id']; ?>">
+                        <input type="text" name="new_ip" placeholder="New IP" required><br>
+                        <input type="number" name="new_ttl" placeholder="New TTL" min="1" required><br>
+                        <input type="submit" name="update_ip" value="Update IP/TTL">
+                    </form>
+                </td>
+                <td>
+                    <a href="view_logs.php?ddns_id=<?php echo $entry['id']; ?>">View Logs</a>
+                </td>
+                <td>
+                    <a href="manage_ddns.php?delete=<?php echo $entry['id']; ?>" onclick="return confirm('Are you sure you want to delete this DDNS entry?');">Delete</a>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
     </table>
 
     <p><a href="dashboard.php">Back to Dashboard</a></p>
+
+    <!-- Initialize DataTables -->
+    <script>
+        $(document).ready(function() {
+            $('#ddnsTable').DataTable({
+                "order": [[0, "asc"]], // Default sorting by FQDN (first column) in ascending order
+                "columnDefs": [
+                    { "orderable": false, "targets": [5, 6, 7] } // Disable sorting for Update IP/TTL, Action, and Logs columns
+                ]
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,6 +1,28 @@
 <?php
 session_start();
+
+error_reporting(0);
+ini_set('display_errors', 0);
+
+function handleFatalError() {
+    $error = error_get_last();
+    if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        die("A fatal error occurred. Please check your configuration and try again, maybe database connection is not properly configured. Please check the dbconfig.php file and ensure the database credentials are correct.");
+    }
+}
+
+register_shutdown_function('handleFatalError');
+
+if (!file_exists('dbconfig.php')) {
+    die("The database configuration file (dbconfig.php) is missing. Please create it with the correct database credentials.");
+}
+
 include 'dbconfig.php';
+
+if ($link === null || $link->connect_error) {
+    die("Database connection failed. Please check the dbconfig.php file and ensure the database credentials are correct.");
+}
+
 
 // Function to check if a table exists in the database
 function tableExists($link, $tableName) {

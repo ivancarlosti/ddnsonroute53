@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_admin'])) {
     <?php if (empty($tables)): ?>
         <h2>Create First Admin User</h2>
         <form method="post">
-            <label>Username (Email):</label>
+            <label>Email address:</label>
             <input type="email" name="username" required><br>
             <label>Password:</label>
             <input type="password" name="password" required><br>
