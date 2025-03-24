@@ -14,7 +14,8 @@ $link = @new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 // Check for connection errors
 if ($link->connect_error) {
-    // Do not die here; let the calling script handle the error
+    // Log the error and set $link to null
+    error_log("Database connection failed: " . $link->connect_error);
     $link = null;
 }
 ?>
