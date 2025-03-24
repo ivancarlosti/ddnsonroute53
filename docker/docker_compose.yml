@@ -1,7 +1,6 @@
 name: ddnsonroute53
 
 services:
-  # MariaDB Database
   db:
     image: mariadb:latest
     container_name: ddnsonroute53-db
@@ -21,7 +20,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # Git Auto-Cloner/Puller
   git:
     image: alpine/git:latest
     container_name: ddnsonroute53-git
@@ -33,7 +31,6 @@ services:
     networks:
       - web
 
-  # PHP + Apache Server
   php:
     image: php:apache
     container_name: ddnsonroute53-php
@@ -50,13 +47,12 @@ services:
       - DB_NAME=${DB_NAME}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.php.rule=Host(`example.com`)"   # CHANGE IT TO YOUR DOMAIN
+      - "traefik.http.routers.php.rule=Host(`example.com`)"   ### CHANGE example.com IT TO YOUR DOMAIN ###
       - "traefik.http.routers.php.entrypoints=websecure"
       - "traefik.http.routers.php.tls.certresolver=letsencrypt"
     networks:
       - web
 
-  # Traefik Reverse Proxy
   traefik:
     image: traefik:v2.10
     container_name: ddnsonroute53-traefik
@@ -74,7 +70,7 @@ services:
       - --entrypoints.websecure.address=:443
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
       - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --certificatesresolvers.letsencrypt.acme.email=your@email.com   # CHANGE IT TO YOUR EMAIL ADDRESS
+      - --certificatesresolvers.letsencrypt.acme.email=email@example.com   ### CHANGE email@example.com TO YOUR EMAIL ADDRESS ###
       - --certificatesresolvers.letsencrypt.acme.storage=/etc/traefik/acme.json
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
     networks:
