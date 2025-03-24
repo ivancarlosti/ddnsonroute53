@@ -17,7 +17,7 @@ Requirement:
 
 or
 
-* Docker Compose (under construction)
+* [Docker Compose](https://docs.docker.com/engine/install/)
 
 Setup instructions:
 
