@@ -1,6 +1,27 @@
-name: ddnsonroute53
+version: '3.8'
 
 services:
+  # MariaDB Database
+  db:
+    image: mariadb:10.11
+    container_name: ddnsonroute53-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - web
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Git Auto-Cloner/Puller
   git:
     image: alpine/git:latest
     container_name: ddnsonroute53-gitcloner
@@ -9,15 +30,48 @@ services:
     working_dir: /www
     entrypoint: /bin/sh -c "while true; do if [ -d .git ]; then git pull; else git clone --recurse-submodules -j8 https://github.com/ivancarlosti/ddnsonroute53.git .; fi; sleep 600; done"
     restart: unless-stopped
+    networks:
+      - web
 
-  webserver:
+  # PHP + Apache Server
+  php:
     image: php:apache
-    container_name: yourproject-webserver
+    depends_on:
+      db:
+        condition: service_healthy
+      git:
     volumes:
-      - ./www:/usr/share/nginx/html
+      - ./www:/var/www/html
+    environment:
+      - DB_SERVER=db  # Uses Docker's internal DNS
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.php.rule=Host(`yourdomain.com`)"
+      - "traefik.http.routers.php.entrypoints=websecure"
+      - "traefik.http.routers.php.tls.certresolver=letsencrypt"
+    networks:
+      - web
+
+  # Traefik Reverse Proxy
+  traefik:
+    image: traefik:v2.10
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+      - ./traefik/acme.json:/acme.json
+    networks:
+      - web
     restart: unless-stopped
-    depends_on:
-      - git
 
+volumes:
+  db_data:
+
+networks:
+  web:
+    external: false
