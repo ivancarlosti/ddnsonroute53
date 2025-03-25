@@ -86,7 +86,7 @@ IAM required policy, remember to update `YOURZONEID` value to related domain zon
 
 ## DDNS cURL update format:
 
-To simplify the process, `[FQDN]` is also used as login for basuc auth purposes.
+To simplify the process, `[FQDN]` is also used as login for basic auth purposes.
 
 Example: `https://[FQDN]:[PASSWORD]@subdomain.example.com/update.php?hostname=[FQDN]&myip=[IP]`
 
