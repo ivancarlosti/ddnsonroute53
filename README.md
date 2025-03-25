@@ -33,7 +33,11 @@ curl -o .env https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/d
 curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/docker-compose.yml
 ```
 * Edit both `.env`, `docker-compose.yml` files
-  * Note that this Compose contains MariaDB as database, Apache+PHP as webserver, git to clone this repository, Traefik to get automatic certificate generation. Edit the file properly removing not required services.
+  * This Docker Compose contains following services, adapt it for your needs:
+    * MariaDB as database
+    * Apache+PHP as webserver
+    * git to clone this repository,
+    * Traefik to get automatic certificate generation
 * Start Docker Compose, example:
 ```
 docker compose pull && docker compose up -d
