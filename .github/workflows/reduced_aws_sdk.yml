@@ -24,7 +24,7 @@ jobs:
         run: mkdir -p ./vendor
 
       - name: Uncompress ZIP file
-        run: unzip -o aws-reduced.zip 'Aws/*.php' 'Aws/Api/*' 'Aws/AppConfig/*' 'Aws/Auth/*' 'Aws/ClientSideMonitoring/*' 'Aws/Configuration/*' 'Aws/Credentials/*' 'Aws/DefaultsMode/*' 'Aws/EndpointDiscovery/*' 'Aws/EndpointV2/*' 'Aws/Endpoint/*' 'Aws/Exception/*' 'Aws/Handler/*' 'Aws/Identity/*' 'Aws/Retry/*' 'Aws/Route53/*' 'Aws/Signature/*' 'Aws/Support/*' 'Aws/Token/*' 'GuzzleHttp/*' 'JmesPath/*' 'Psr/*' -d ./vendor
+        run: unzip -o aws-reduced.zip 'Aws/[^/]*.php' 'Aws/Api/*' 'Aws/AppConfig/*' 'Aws/Auth/*' 'Aws/ClientSideMonitoring/*' 'Aws/Configuration/*' 'Aws/Credentials/*' 'Aws/DefaultsMode/*' 'Aws/EndpointDiscovery/*' 'Aws/EndpointV2/*' 'Aws/Endpoint/*' 'Aws/Exception/*' 'Aws/Handler/*' 'Aws/Identity/*' 'Aws/Retry/*' 'Aws/Route53/*' 'Aws/Signature/*' 'Aws/Support/*' 'Aws/Token/*' 'GuzzleHttp/*' 'JmesPath/*' 'Psr/*' -d ./vendor
 
       - name: Clean up
         run: rm aws-reduced.zip
