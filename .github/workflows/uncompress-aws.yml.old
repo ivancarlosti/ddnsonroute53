@@ -23,8 +23,11 @@ jobs:
       - name: Create /aws directory
         run: mkdir -p ./aws
 
-      - name: Uncompress ZIP file
-        run: unzip -o aws.zip -d ./aws
+#      - name: Uncompress ZIP file
+#        run: unzip -o aws.zip -d ./aws
+
+      - name: Uncompress only required AWS SDK files
+        run: unzip aws.zip 'aws/Aws/Route53/*' 'aws/Aws/Exception/*' 'aws/Aws/ClientSideMonitoring/*' 'aws/Aws/data/route53/*' -d ./aws
 
       - name: Clean up
         run: rm aws.zip
