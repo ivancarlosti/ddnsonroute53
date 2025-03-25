@@ -49,7 +49,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.php.rule=Host(`subdomain.example.com`)"   ### CHANGE subdomain.example.com IT TO YOUR DOMAIN ###
+      - "traefik.http.routers.php.rule=Host(`subdomain.example.com`)"   ### CHANGE subdomain.example.com TO YOUR DOMAIN ###
       - "traefik.http.routers.php.entrypoints=websecure"
       - "traefik.http.routers.php.tls.certresolver=letsencrypt"
     command: bash -c "docker-php-ext-install mysqli && apache2-foreground"
