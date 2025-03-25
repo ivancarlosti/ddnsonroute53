@@ -86,11 +86,11 @@ IAM required policy, remember to update `YOURZONEID` value to related domain zon
 
 ## DDNS cURL update format:
 
-`https://[username]:[password]@example.com/update.php?hostname=[domain]&myip=[IPv4]`
-
 To simplify the process, `[domain]` is also used as `[username]`.
 
-TP-Link Omada Update URL: `https://[USERNAME]:[PASSWORD]@example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
+### Tested DDNS Custom URL:
+
+TP-Link Omada Update URL: `https://[USERNAME]:[PASSWORD]@subdomain.example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
 
 ## To Do:
 
