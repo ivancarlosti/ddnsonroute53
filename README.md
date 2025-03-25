@@ -27,12 +27,13 @@ or
 
 ## Hosting instructions (Docker Compose):
 
-* Download /docker files on your place, example:
+* Download `/docker` files on your server, example:
 ```
 curl -o .env https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/.env
 curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/docker-compose.yml
 ```
 * Edit both `.env`, `docker-compose.yml` files
+  * Note that this Compose contains MariaDB as database, Apache+PHP as webserver, git to clone this repository, Traefik to get automatic certificate generation. Edit the file properly removing not required services.
 * Start Docker Compose, example:
 ```
 docker compose pull && docker compose up -d
