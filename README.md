@@ -90,7 +90,8 @@ To simplify the process, `[domain]` is also used as `[username]`.
 
 ### Tested DDNS Custom URL:
 
-TP-Link Omada Update URL: `https://[USERNAME]:[PASSWORD]@subdomain.example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
+TP-Link Omada Update URL:
+`https://[USERNAME]:[PASSWORD]@subdomain.example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
 
 ## To Do:
 
