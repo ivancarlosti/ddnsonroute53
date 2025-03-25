@@ -84,16 +84,14 @@ IAM required policy, remember to update `YOURZONEID` value to related domain zon
 }
 ```
 
-
-DDNS cURL update format (friendly format tested on TP-Link Omada routers):
+## DDNS cURL update format:
 
 `https://[username]:[password]@example.com/update.php?hostname=[domain]&myip=[IPv4]`
 
 To simplify the process, `[domain]` is also used as `[username]`.
 
-Omada Update URL: `https://[USERNAME]:[PASSWORD]@example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
+TP-Link Omada Update URL: `https://[USERNAME]:[PASSWORD]@example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
 
-ToDo:
+## To Do:
 
 * HTML beautification
-* Docker Compose samples with/without MariaDB and reverse proxy
