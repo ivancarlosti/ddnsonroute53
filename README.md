@@ -34,7 +34,7 @@ curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnson
 ```
 * Edit both `.env`, `docker-compose.yml` files
 * Start Docker Compose, example:
-* ```
+```
 docker compose pull && docker compose up -d
 ```
 
