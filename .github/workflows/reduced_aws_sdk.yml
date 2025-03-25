@@ -24,7 +24,7 @@ jobs:
         run: mkdir -p ./vendor
 
       - name: Uncompress ZIP file
-        run: unzip -o aws-reduced.zip 'vendor/Aws/Route53/*' 'vendor/Aws/Exception/*' 'vendor/Aws/ClientSideMonitoring/*' 'vendor/Aws/data/route53/*' -d ./vendor
+        run: unzip -o aws-reduced.zip 'aws-reduced/Aws/Route53/*' 'aws-reduced/Aws/Exception/*' 'aws-reduced/Aws/ClientSideMonitoring/*' 'aws-reduced/Aws/data/route53/*' -d ./vendor
 
       - name: Clean up
         run: rm aws-reduced.zip
