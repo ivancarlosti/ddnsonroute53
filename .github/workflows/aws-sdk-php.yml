@@ -17,3 +17,6 @@ jobs:
 
     - name: Install Composer dependencies
       run: composer install
+
+    - name: Run PHP script
+      run: php manage_ddns.php
