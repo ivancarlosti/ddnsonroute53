@@ -98,3 +98,4 @@ TP-Link Omada Update URL:
 ## To Do:
 
 * HTML beautification
+* Build releases using Compose to populate AWS SDK dinamically
