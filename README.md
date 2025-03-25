@@ -19,10 +19,27 @@ or
 
 * [Docker Compose](https://docs.docker.com/engine/install/)
 
-Setup instructions:
+## Hosting instructions (PHP hosting):
 
 * Save the project on your server (download [here](https://github.com/ivancarlosti/ddnsonroute53/zipball/master))
 * Set database information on `dbconfig.php`
+
+
+## Hosting instructions (Docker Compose):
+
+* Download /docker files on your place, example:
+```
+curl -o .env https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/.env
+curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/docker-compose.yml
+```
+* Edit both `.env`, `docker-compose.yml` files
+* Start Docker Compose, example:
+* ```
+docker compose pull && docker compose up -d
+```
+
+## Service setup:
+
 * Run `setup.php` on browser to set username and password
 * Run `index.php` on browser to login
 * Access `Manage AWS Credentials` menu and fill required fields
