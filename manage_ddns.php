@@ -6,7 +6,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 }
 
 include 'dbconfig.php';
-require 'vendor/aws-autoloader.php';
+require 'vendor/aws.phar';
 
 use Aws\Route53\Route53Client;
 use Aws\Exception\AwsException;
