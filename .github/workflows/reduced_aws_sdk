@@ -1,4 +1,4 @@
-name: Uncompress AWS SDK
+name: Uncompress reduced AWS SDK
 
 on:
   push:
@@ -18,16 +18,16 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Download AWS SDK ZIP
-        run: wget https://github.com/aws/aws-sdk-php/releases/download/3.342.11/aws.zip -O aws.zip
+        run: wget https://github.com/aws/aws-sdk-php/releases/download/3.342.11/aws.zip -O aws-reduced.zip
 
-      - name: Create /aws directory
+      - name: Create /vendor directory
         run: mkdir -p ./vendor
 
       - name: Uncompress ZIP file
-        run: unzip -o aws.zip 'vendor/Aws/Route53/*' 'vendor/Aws/Exception/*' 'vendor/Aws/ClientSideMonitoring/*' 'vendor/Aws/data/route53/*' -d ./vendor
+        run: unzip -o aws-reduced.zip 'vendor/Aws/Route53/*' 'vendor/Aws/Exception/*' 'vendor/Aws/ClientSideMonitoring/*' 'vendor/Aws/data/route53/*' -d ./vendor
 
       - name: Clean up
-        run: rm aws.zip
+        run: rm aws-reduced.zip
 
       - name: Commit changes
         continue-on-error: true
