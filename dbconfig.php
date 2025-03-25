@@ -1,9 +1,9 @@
 <?php
 // dbconfig.php
-define('DB_SERVER', getenv('DB_SERVER') ?: 'your_database_host');
-define('DB_NAME', getenv('DB_NAME') ?: 'your_database_name');
-define('DB_USERNAME', getenv('DB_USERNAME') ?: 'your_database_user');
-define('DB_PASSWORD', getenv('DB_PASSWORD') ?: 'your_database_password');
+define('DB_SERVER', getenv('DB_SERVER') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME') ?: 'dns');
+define('DB_USERNAME', getenv('DB_USERNAME') ?: 'dns');
+define('DB_PASSWORD', getenv('DB_PASSWORD') ?: '9otPKG1I0LzBFQ2pfB2v');
 
 
 // Create the connection (EXACTLY as in your original)

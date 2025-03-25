@@ -1,5 +1,5 @@
 # DDNS on Route53
-Router friendly cURL client to enable Dynamic DNS functionality over AWS Route53 managed through browser, shared hosting friendly.
+Router friendly client to update AWS Route53 entries for Dynamic DNS funtionality
 
 <a target="_blank" href="https://github.com/ivancarlosti/ddnsonroute53"><img src="https://img.shields.io/github/stars/ivancarlosti/ddnsonroute53?style=flat" /></a>
 <a target="_blank" href="https://github.com/ivancarlosti/ddnsonroute53"><img src="https://img.shields.io/github/last-commit/ivancarlosti/ddnsonroute53" /></a>
@@ -97,5 +97,4 @@ TP-Link Omada Update URL:
 
 ## To Do:
 
-* Use Composer to make AWS SDK PHP available on repository
 * HTML beautification
