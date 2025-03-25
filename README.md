@@ -97,4 +97,5 @@ TP-Link Omada Update URL:
 
 ## To Do:
 
+* Use Composer to make AWS SDK PHP available on repository
 * HTML beautification
