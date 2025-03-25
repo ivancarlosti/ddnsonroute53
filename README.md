@@ -86,12 +86,14 @@ IAM required policy, remember to update `YOURZONEID` value to related domain zon
 
 ## DDNS cURL update format:
 
-To simplify the process, `[domain]` is also used as `[username]`.
+To simplify the process, `[FQDN]` is also used as login for basuc auth purposes.
+
+Example: `https://[FQDN]:[PASSWORD]@subdomain.example.com/update.php?hostname=[FQDN]&myip=[IP]`
 
 ### Tested DDNS Custom URL:
 
 TP-Link Omada Update URL:
-`https://[USERNAME]:[PASSWORD]@subdomain.example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
+* `https://[USERNAME]:[PASSWORD]@subdomain.example.com/update.php?hostname=[DOMAIN]&myip=[IP]`
 
 ## To Do:
 
