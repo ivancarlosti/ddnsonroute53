@@ -27,7 +27,7 @@ jobs:
         run: unzip -o aws.zip -d ./vendor
 
       - name: Clean up
-        run: rm aws-.zip
+        run: rm aws.zip
 
       - name: Commit changes
         continue-on-error: true
