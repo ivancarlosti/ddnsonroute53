@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Download AWS SDK ZIP
+      - name: Download AWS SDK ZIP to be reduced
         run: wget https://github.com/aws/aws-sdk-php/releases/download/3.342.11/aws.zip -O aws-reduced.zip
 
       - name: Create /vendor directory
