@@ -18,6 +18,7 @@ jobs:
       
     - name: Download AWS SDK PHAR
       run: |
+        mkdir -p vendor
         wget https://github.com/aws/aws-sdk-php/releases/latest/download/aws.phar -O vendor/aws.phar
         
     - name: Commit and push changes
