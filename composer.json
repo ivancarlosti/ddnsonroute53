@@ -1,5 +1,0 @@
-{
-    "require": {
-        "aws/aws-sdk-php-route53": "^3.342.11"
-    }
-}
