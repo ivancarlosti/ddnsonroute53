@@ -1,6 +1,6 @@
 <?php
 include 'dbconfig.php';
-require 'vendor/autoload.php';
+require 'vendor/aws-autoloader.php';
 
 use Aws\Route53\Route53Client;
 use Aws\Exception\AwsException;
