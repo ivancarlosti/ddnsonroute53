@@ -51,7 +51,7 @@ docker compose pull && docker compose up -d
 * Access `Manage DDNS Entries` to add, edit and delete DDNS entries
 * (optional) Access `Manage Users` to change user password, create new users, add/edit reCAPTCHA keys 
 
-IAM required policy, note that this policy restricts access to only manage subdomains from `subdomain.example.com`, remove the condition if you want to use root domain. Remember to update `YOURZONEID` value to related domain zone ID and `subdomain.example.com.` to your subdomain:
+IAM required policy, remember to update `YOURZONEID` value to related domain zone ID and `subdomain.example.com.` to your domain or subdomain for service usage:
 
 ```
 {
