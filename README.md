@@ -104,6 +104,8 @@ Using PHP with the Suhosin patch is not recommended, but is common on some Ubunt
 suhosin.executor.include.whitelist = phar
 ```
 
+---
+
 ## Donation
 
 | If you found this project helpful, consider |
