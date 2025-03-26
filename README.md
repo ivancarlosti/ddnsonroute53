@@ -10,7 +10,7 @@ Please help funding the project.
 Requirement:
 
 * MySQL/MariaDB
-* PHP 8+
+* PHP 8+ [([note](#hosting-note))
 * HTTP server
 
 or
@@ -97,3 +97,11 @@ TP-Link Omada Update URL:
 
 * HTML beautification
 * Build releases using Compose to populate AWS SDK dinamically
+
+## Hosting note:
+
+Using PHP with the Suhosin patch is not recommended, but is common on Ubuntu and Debian distributions. In this case, you might need to enable the use of phars in the `suhosin.ini`. If you don’t do this, including a phar file in your code will cause a silent failure. To modify `suhosin.ini`, add the following line.
+
+```
+suhosin.executor.include.whitelist = phar
+```
