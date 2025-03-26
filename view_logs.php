@@ -7,8 +7,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
 include 'dbconfig.php';
 
-$ddns_id = $_GET['ddns_id'];
-
 // Clean up logs older than 30 days
 $cleanup_sql = "CALL CleanupOldLogs()";
 if ($cleanup_stmt = $link->prepare($cleanup_sql)) {
@@ -16,49 +14,125 @@ if ($cleanup_stmt = $link->prepare($cleanup_sql)) {
     $cleanup_stmt->close();
 }
 
-// Fetch logs for the specified DDNS entry
-$sql = "SELECT action, ip_address, details, timestamp FROM ddns_logs WHERE ddns_entry_id = ? ORDER BY timestamp DESC";
-if ($stmt = $link->prepare($sql)) {
-    $stmt->bind_param("i", $ddns_id);
-    $stmt->execute();
-    $stmt->store_result();
-    $stmt->bind_result($action, $ip_address, $details, $timestamp);
+// Initialize variables
+$ddns_id = isset($_GET['ddns_id']) ? (int)$_GET['ddns_id'] : null;
+$where_clause = "";
+$params = [];
+$types = "";
 
-    $logs = [];
-    while ($stmt->fetch()) {
-        $logs[] = [
-            'action' => $action,
-            'ip_address' => $ip_address,
-            'details' => $details,
-            'timestamp' => $timestamp
-        ];
-    }
-    $stmt->close();
+// Build WHERE clause if ddns_id is specified
+if ($ddns_id !== null) {
+    $where_clause = " WHERE l.ddns_entry_id = ?";
+    $params[] = $ddns_id;
+    $types = "i";
 }
+
+// Pagination setup
+$per_page = 20;
+$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$offset = ($page - 1) * $per_page;
+
+// Main query with conditional filtering
+$query = "SELECT l.*, d.ddns_fqdn 
+          FROM ddns_logs l 
+          LEFT JOIN ddns_entries d ON l.ddns_entry_id = d.id
+          $where_clause
+          ORDER BY l.timestamp DESC
+          LIMIT ?, ?";
+
+// Count query with same filtering
+$count_query = "SELECT COUNT(*) as total 
+                FROM ddns_logs l
+                $where_clause";
+
+// Prepare and execute count query
+$count_stmt = $link->prepare($count_query);
+if ($ddns_id !== null) {
+    $count_stmt->bind_param($types, ...$params);
+}
+$count_stmt->execute();
+$total = $count_stmt->get_result()->fetch_assoc()['total'];
+$count_stmt->close();
+
+// Calculate total pages
+$pages = ceil($total / $per_page);
+
+// Prepare main query
+$stmt = $link->prepare($query);
+if ($ddns_id !== null) {
+    $params[] = $offset;
+    $params[] = $per_page;
+    $stmt->bind_param($types . "ii", ...$params);
+} else {
+    $stmt->bind_param("ii", $offset, $per_page);
+}
+$stmt->execute();
+$logs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>View Logs</title>
+    <title><?= $ddns_id ? "Logs for DDNS #$ddns_id" : "All DDNS Logs" ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Logs for DDNS Entry #<?php echo $ddns_id; ?></h1>
-    <table border="1">
-        <tr>
-            <th>Action</th>
-            <th>IP Address</th>
-            <th>Details</th>
-            <th>Timestamp</th>
-        </tr>
-        <?php foreach ($logs as $log): ?>
-        <tr>
-            <td><?php echo htmlspecialchars($log['action']); ?></td>
-            <td><?php echo htmlspecialchars($log['ip_address']); ?></td>
-            <td><?php echo htmlspecialchars($log['details']); ?></td>
-            <td><?php echo htmlspecialchars($log['timestamp']); ?></td>
-        </tr>
-        <?php endforeach; ?>
-    </table>
-    <p><a href="manage_ddns.php">Back to Manage DDNS Entries</a></p>
+    <div class="container mt-4">
+        <h1><?= $ddns_id ? "Logs for DDNS Entry #$ddns_id" : "All DDNS Logs" ?></h1>
+        
+        <!-- Logs Table -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>FQDN</th>
+                    <th>Action</th>
+                    <th>IP</th>
+                    <th>Details</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($logs as $log): ?>
+                <tr>
+                    <td><?= htmlspecialchars($log['ddns_fqdn'] ?? 'N/A') ?></td>
+                    <td><?= htmlspecialchars($log['action']) ?></td>
+                    <td><?= htmlspecialchars($log['ip_address']) ?></td>
+                    <td><?= htmlspecialchars($log['details']) ?></td>
+                    <td><?= htmlspecialchars($log['timestamp']) ?></td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination">
+                <?php if ($page > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>">Previous</a>
+                    </li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $pages; $i++): ?>
+                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($page < $pages): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>">Next</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+        
+        <p class="mt-3">
+            <a href="<?= $ddns_id ? 'manage_ddns.php' : 'dashboard.php' ?>" class="btn btn-secondary">
+                Back to <?= $ddns_id ? 'DDNS Management' : 'Dashboard' ?>
+            </a>
+        </p>
+    </div>
 </body>
 </html>
