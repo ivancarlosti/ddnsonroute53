@@ -21,6 +21,7 @@ $curlCommand = "https://[USERNAME]:[PASSWORD]@$domain/update.php?hostname=[DOMAI
     <p><a href="manage_users.php">Manage Users</a></p>
     <p><a href="manage_aws.php">Manage AWS Credentials</a></p>
     <p><a href="manage_ddns.php">Manage DDNS Entries</a></p>
+    <p><a href="view_logs.php">View All Logs</a></p>
     <p><a href="index.php">Logout</a></p>
 
     <!-- Display the cURL command -->
