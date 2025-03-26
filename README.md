@@ -98,7 +98,7 @@ TP-Link Omada Update URL:
 
 ## Hosting note:
 
-Using PHP with the Suhosin patch is not recommended, but is common on Ubuntu and Debian distributions. In this case, you might need to enable the use of phars in the `suhosin.ini`. If you don’t do this, including a phar file in your code will cause a silent failure. To modify `suhosin.ini`, add the following line.
+Using PHP with the Suhosin patch is not recommended, but is common on some Ubuntu and Debian distributions. To modify `suhosin.ini`, add the following line.
 
 ```
 suhosin.executor.include.whitelist = phar
