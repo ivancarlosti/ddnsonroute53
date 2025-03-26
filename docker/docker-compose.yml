@@ -57,7 +57,7 @@ services:
       - web
 
   traefik:
-    image: traefik:v2.10
+    image: traefik:latest
     container_name: ddnsonroute53-traefik
     ports:
       - "80:80"
