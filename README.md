@@ -105,3 +105,12 @@ Using PHP with the Suhosin patch is not recommended, but is common on Ubuntu and
 ```
 suhosin.executor.include.whitelist = phar
 ```
+
+## Donation
+
+<!-- prettier-ignore-start -->
+
+| If you found this project helpful, consider |
+| :---: |
+[**buying me a coffee**][buymeacoffee], [**donate by paypal**][paypal] or just [**leave a star**](../..)⭐
+|Thanks for your support, it is much appreciated!|
