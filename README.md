@@ -108,11 +108,9 @@ suhosin.executor.include.whitelist = phar
 
 ## Donation
 
-<!-- prettier-ignore-start -->
-
 | If you found this project helpful, consider |
 | :---: |
-[**buying me a coffee**][buymeacoffee], [**donate by paypal**][paypal] or just [**leave a star**](../..)⭐
+[**buying me a coffee**][buymeacoffee], [**donate by paypal**][paypal], [**sponsor this project**][https://github.com/sponsors/ivancarlosti] or just [**leave a star**](../..)⭐
 |Thanks for your support, it is much appreciated!|
 
 ## License
@@ -129,3 +127,4 @@ suhosin.executor.include.whitelist = phar
 [ivancarlos]: https://ivancarlos.me
 [buymeacoffee]: https://www.buymeacoffee.com/ivancarlos
 [paypal]: https://icc.gg/donate
+[sponsor]: https://github.com/sponsors/ivancarlosti
