@@ -51,32 +51,29 @@ IAM required policy, remember to update `YOURZONEID` value to related domain zon
 
 ```
 {
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Effect": "Allow",
-			"Action": [
-				"route53:ChangeResourceRecordSets",
-				"route53:ListResourceRecordSets"
-			],
-			"Resource": "arn:aws:route53:::hostedzone/YOURZONEID",
-			"Condition": {
-				"ForAllValues:StringLike": {
-					"route53:ChangeResourceRecordSetsNormalizedRecordNames": [
-						"*.subdomain.example.com."
-					]
-				}
-			}
-		},
-		{
-			"Effect": "Allow",
-			"Action": [
-				"route53:GetChange",
-				"route53:ListHostedZones"
-			],
-			"Resource": "*"
-		}
-	]
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "route53:ChangeResourceRecordSets",
+        "route53:ListResourceRecordSets"
+      ],
+      "Resource": "arn:aws:route53:::hostedzone/YOURZONEID",
+      "Condition": {
+        "ForAllValues:StringLike": {
+          "route53:ChangeResourceRecordSetsNormalizedRecordNames": [
+            "*.subdomain.example.com."
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": "route53:GetChange",
+      "Resource": "*"
+    }
+  ]
 }
 ```
 
