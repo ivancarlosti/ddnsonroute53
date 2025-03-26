@@ -5,7 +5,7 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 <a target="_blank" href="https://github.com/ivancarlosti/ddnsonroute53"><img src="https://img.shields.io/github/last-commit/ivancarlosti/ddnsonroute53" /></a>
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ivancarlosti?label=GitHub%20Sponsors)](https://github.com/sponsors/ivancarlosti)
 
-Requirement:
+## Requirement:
 
 * MySQL/MariaDB
 * PHP 8+ [([note](#hosting-note))
