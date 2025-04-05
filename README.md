@@ -46,7 +46,8 @@ docker compose pull && docker compose up -d
 * Run `index.php` on browser to login
 * Access `Manage AWS Credentials` menu and fill required fields
 * Access `Manage DDNS Entries` to add, edit and delete DDNS entries
-* (optional) Access `Manage Users` to change user password, create new users, add/edit reCAPTCHA keys 
+* (optional) Access `Manage Users` to change user password, create new users, add/edit reCAPTCHA keys
+* (optional) Access `View All Logs` to check last 30 days of entries created and/or updated
 
 IAM required policy, remember to update `YOURZONEID` value to related domain zone ID and `subdomain.example.com.` to your domain or subdomain for service usage:
 
