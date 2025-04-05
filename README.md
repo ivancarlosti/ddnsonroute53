@@ -4,6 +4,7 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 <a target="_blank" href="https://github.com/ivancarlosti/ddnsonroute53"><img src="https://img.shields.io/github/stars/ivancarlosti/ddnsonroute53?style=flat" /></a>
 <a target="_blank" href="https://github.com/ivancarlosti/ddnsonroute53"><img src="https://img.shields.io/github/last-commit/ivancarlosti/ddnsonroute53" /></a>
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ivancarlosti?label=GitHub%20Sponsors)](https://github.com/sponsors/ivancarlosti)
+[![download_aws_sdk](https://github.com/ivancarlosti/ddnsonroute53/actions/workflows/download_aws_sdk.yml/badge.svg)](https://github.com/ivancarlosti/ddnsonroute53/actions/workflows/download_aws_sdk.yml)
 
 ## Requirement:
 
