@@ -1,8 +1,8 @@
 name: Update AWS SDK PHAR
 on:
   schedule:
-    # Runs every 12 hours
-    - cron: '0 */12 * * *'
+    # Runs at 00:18 and 12:18 UTC every day
+    - cron: '18 */12 * * *'
   workflow_dispatch:
 
 permissions:
