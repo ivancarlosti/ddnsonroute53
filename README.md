@@ -3,13 +3,14 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 
 <!-- buttons -->
 [![Stars](https://img.shields.io/github/stars/ivancarlosti/ddnsonroute53?label=⭐%20Stars&color=gold&style=flat)](https://github.com/ivancarlosti/ddnsonroute53/stargazers)
+[![Watchers](https://img.shields.io/github/watchers/ivancarlosti/ddnsonroute53?label=Watchers&style=flat&color=red)](https://github.com/sponsors/ivancarlosti)
+[![Forks](https://img.shields.io/github/forks/ivancarlosti/ddnsonroute53?label=Forks&style=flat&color=ff69b4)](https://github.com/sponsors/ivancarlosti)
 [![GitHub last commit](https://img.shields.io/github/last-commit/ivancarlosti/ddnsonroute53?label=Last%20Commit)](https://github.com/ivancarlosti/ddnsonroute53/commits)
-[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ivancarlosti/ddnsonroute53?label=Activity)](https://github.com/ivancarlosti/ddnsonroute53/pulse)
-[![GitHub Issues](https://img.shields.io/github/issues/ivancarlosti/ddnsonroute53?label=Issues&color=orange)](https://github.com/ivancarlosti/ddnsonroute53/issues)  
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ivancarlosti/ddnsonroute53?label=Activity)](https://github.com/ivancarlosti/ddnsonroute53/pulse)  
+[![GitHub Issues](https://img.shields.io/github/issues/ivancarlosti/ddnsonroute53?label=Issues&color=orange)](https://github.com/ivancarlosti/ddnsonroute53/issues)
 [![License](https://img.shields.io/github/license/ivancarlosti/ddnsonroute53?label=License)](LICENSE)
 [![Security](https://img.shields.io/badge/Security-View%20Here-purple)](https://github.com/ivancarlosti/ddnsonroute53/security)
-[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-1.4-4baaaa)](https://github.com/ivancarlosti/ddnsonroute53/tree/main?tab=coc-ov-file)  
-[![download_aws_sdk](https://github.com/ivancarlosti/ddnsonroute53/actions/workflows/download_aws_sdk.yml/badge.svg)](https://github.com/ivancarlosti/ddnsonroute53/actions/workflows/download_aws_sdk.yml)
+[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-2.1-4baaaa)](https://github.com/ivancarlosti/ddnsonroute53?tab=coc-ov-file)
 <!-- endbuttons -->
 
 ## Requirement:
@@ -128,7 +129,7 @@ suhosin.executor.include.whitelist = phar
 [![Threads](https://img.shields.io/badge/Threads-@ivancarlos-808080)](https://threads.net/@ivancarlos)
 [![X](https://img.shields.io/badge/X-@ivancarlos-000000)](https://x.com/ivancarlos)  
 [![Discord](https://img.shields.io/badge/Discord-@ivancarlos.me-5865F2)](https://discord.com/users/ivancarlos.me)
-[![Signal](https://img.shields.io/badge/Signal-@ivancarlos.01-2592E9)](https://icc.gg/-signal)
+[![Signal](https://img.shields.io/badge/Signal-@ivancarlos.01-2592E9)](https://icc.gg/.signal)
 [![Telegram](https://img.shields.io/badge/Telegram-@ivancarlos-26A5E4)](https://t.me/ivancarlos)  
 [![Website](https://img.shields.io/badge/Website-ivancarlos.me-FF6B6B)](https://ivancarlos.me)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/ivancarlosti?label=GitHub%20Sponsors&color=ffc0cb)][sponsor]
