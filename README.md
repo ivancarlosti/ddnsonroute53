@@ -1,6 +1,7 @@
 # DDNS on Route53
 Router friendly client to update AWS Route53 entries for Dynamic DNS funtionality
 
+<!-- buttons -->
 [![Stars](https://img.shields.io/github/stars/ivancarlosti/ddnsonroute53?label=⭐%20Stars&color=gold&style=flat)](https://github.com/ivancarlosti/ddnsonroute53/stargazers)
 [![GitHub last commit](https://img.shields.io/github/last-commit/ivancarlosti/ddnsonroute53?label=Last%20Commit)](https://github.com/ivancarlosti/ddnsonroute53/commits)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ivancarlosti/ddnsonroute53?label=Activity)](https://github.com/ivancarlosti/ddnsonroute53/pulse)
@@ -9,6 +10,7 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 [![Security](https://img.shields.io/badge/Security-View%20Here-purple)](https://github.com/ivancarlosti/ddnsonroute53/security)
 [![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-1.4-4baaaa)](https://github.com/ivancarlosti/ddnsonroute53/tree/main?tab=coc-ov-file)  
 [![download_aws_sdk](https://github.com/ivancarlosti/ddnsonroute53/actions/workflows/download_aws_sdk.yml/badge.svg)](https://github.com/ivancarlosti/ddnsonroute53/actions/workflows/download_aws_sdk.yml)
+<!-- endbuttons -->
 
 ## Requirement:
 
@@ -107,6 +109,7 @@ Using PHP with the Suhosin patch is not recommended, but is common on some Ubunt
 suhosin.executor.include.whitelist = phar
 ```
 
+<!-- footer -->
 ---
 
 ## 🧑‍💻 Consulting and technical support
