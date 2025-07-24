@@ -25,7 +25,7 @@ or
 
 ## Hosting instructions (PHP hosting):
 
-* Save the project on your server (download [here](https://github.com/ivancarlosti/ddnsonroute53/zipball/master))
+* Save the project on your server (download [here](https://github.com/ivancarlosti/ddnsonroute53/releases/latest))
 * Set database information on `dbconfig.php`
 
 
