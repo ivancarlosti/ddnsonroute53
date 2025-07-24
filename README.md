@@ -16,7 +16,7 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 ## Requirement:
 
 * MySQL/MariaDB
-* PHP 8+ [([note](#hosting-note))
+* PHP 8+
 * HTTP server
 
 or
