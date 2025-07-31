@@ -5,8 +5,6 @@ services:
     image: ghcr.io/ivancarlosti/ddnsonroute53:latest
     env_file: .env
     container_name: ddnsonroute53
-    ports:
-      - "5666:80"  # expose port 5666 to host
     restart: unless-stopped
     volumes:
       - ./www:/var/www/html
