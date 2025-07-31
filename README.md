@@ -37,7 +37,7 @@ curl -o .env https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/d
 curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/docker-compose.yml
 ```
 * Edit both `.env`, `docker-compose.yml` files
-  * This Docker Compose contains only PHP+Apache as webserver, you can use a reverse proxy for SSL, default exposed port is `5666`
+  * This Docker Compose contains only PHP + nginx + mysqli as webserver, you can use a reverse proxy for SSL, default exposed port is `5666`, an external MySQL/MariaDB is required
 * Start Docker Compose, example:
 ```
 docker compose pull && docker compose up -d
@@ -52,7 +52,7 @@ curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnson
 ```
 * Edit both `.env`, `docker-compose.yml` files
   * This Docker Compose contains following services, adapt it for your needs:
-    * PHP+Apache as webserver
+    * PHP + nginx + mysqli as webserver
     * MariaDB as database
     * Traefik to get automatic SSL certificate and reverse proxy
 * Start Docker Compose, example:
