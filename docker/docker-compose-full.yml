@@ -22,17 +22,6 @@ services:
       retries: 15
       start_period: 30s
 
-  git:
-    image: alpine/git:latest
-    container_name: ddnsonroute53-git
-    volumes:
-      - ./www:/www
-    working_dir: /www
-    entrypoint: /bin/sh -c "while true; do if [ -d .git ]; then git pull; else git clone --recurse-submodules -j8 https://github.com/ivancarlosti/ddnsonroute53.git .; fi; sleep 600; done"
-    restart: unless-stopped
-    networks:
-      - web
-
   php:
     image: php:apache
     env_file: .env
@@ -47,14 +36,31 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
+
+    command: bash -c "docker-php-ext-install mysqli && apache2-foreground"
+    networks:
+      - web
+
+services:
+  ddnsonroute53:
+    image: ghcr.io/ivancarlosti/ddnsonroute53:latest
+    env_file: .env
+    container_name: ddnsonroute53
+    ports:
+      - "5666:80"  # expose port 5666 to host
+    restart: unless-stopped
+    volumes:
+      - ./www:/var/www/html
+    environment:
+      - DB_SERVER=${DB_SERVER}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.php.rule=Host(`subdomain.example.com`)"   ### CHANGE subdomain.example.com TO YOUR DOMAIN ###
       - "traefik.http.routers.php.entrypoints=websecure"
       - "traefik.http.routers.php.tls.certresolver=letsencrypt"
-    command: bash -c "docker-php-ext-install mysqli && apache2-foreground"
-    networks:
-      - web
 
   traefik:
     image: traefik:latest
