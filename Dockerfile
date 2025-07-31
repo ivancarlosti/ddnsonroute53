@@ -1,7 +1,7 @@
 FROM php:8.4-fpm-alpine
 
 # Install Nginx and MariaDB client; install PHP extensions (mysqli) and clean up
-RUN apk add --no-cache --update nginx mariadb-client \
+RUN apk add --no-cache --update nginx \
     && docker-php-ext-install mysqli \
     && rm -rf /var/cache/apk/* /tmp/*
 
