@@ -29,7 +29,7 @@ or
 * Set database information on `dbconfig.php`
 
 
-## Hosting instructions (Docker Compose):
+## Hosting instructions (Docker Compose with Apache+PHP):
 
 * Download `/docker` files on your server, example:
 ```
@@ -37,11 +37,24 @@ curl -o .env https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/d
 curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/docker-compose.yml
 ```
 * Edit both `.env`, `docker-compose.yml` files
+  * This Docker Compose contains only PHP+Apache as webserver, you can use a reverse proxy for SSL, default exposed port is `5666`
+* Start Docker Compose, example:
+```
+docker compose pull && docker compose up -d
+```
+
+## Hosting instructions (Docker Compose with Apache+PHP+MariaDB+Traefik):
+
+* Download `/docker` files on your server, example:
+```
+curl -o .env https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/.env
+curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/docker-compose-full.yml
+```
+* Edit both `.env`, `docker-compose.yml` files
   * This Docker Compose contains following services, adapt it for your needs:
-    * MariaDB as database
     * PHP+Apache as webserver
-    * git to clone this repository,
-    * Traefik to get automatic SSL certificate
+    * MariaDB as database
+    * Traefik to get automatic SSL certificate and reverse proxy
 * Start Docker Compose, example:
 ```
 docker compose pull && docker compose up -d
