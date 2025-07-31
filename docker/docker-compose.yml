@@ -12,8 +12,6 @@ services:
 # END remove comment for testing using custom PHP
     ports:
       - "5666:80"  # expose port 5666 to host
-    volumes:
-      - ./www:/var/www/html
     environment:
       - DB_SERVER=${DB_SERVER}
       - DB_NAME=${DB_NAME}
