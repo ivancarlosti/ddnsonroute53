@@ -29,7 +29,7 @@ or
 * Set database information on `dbconfig.php`
 
 
-## Hosting instructions (Docker Compose with Apache+PHP):
+## Hosting instructions (Docker Compose with PHP + nginx + mysqli):
 
 * Download `/docker` files on your server, example:
 ```
@@ -43,7 +43,7 @@ curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnson
 docker compose pull && docker compose up -d
 ```
 
-## Hosting instructions (Docker Compose with Apache+PHP+MariaDB+Traefik):
+## Hosting instructions (Docker Compose with PHP + nginx + mysqli + MariaDB + Traefik):
 
 * Download `/docker` files on your server, example:
 ```
