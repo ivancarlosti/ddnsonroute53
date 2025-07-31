@@ -1,4 +1,4 @@
-FROM php:apache
+FROM php:apache-bullseye
 
 RUN docker-php-ext-install mysqli \
     && apt-get clean \
