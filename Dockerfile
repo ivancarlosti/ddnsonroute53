@@ -10,7 +10,7 @@ COPY . /var/www/html/
 
 # Create nginx.conf directly in the Docker build
 RUN printf '%s\n' \
-  'worker_processes 1;' \
+  'worker_processes auto;' \
   '' \
   'events { worker_connections 1024; }' \
   '' \
