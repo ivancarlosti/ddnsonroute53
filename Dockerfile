@@ -1,5 +1,5 @@
 # Use a slim variant to reduce base image size
-FROM php:apache-bullseye-slim
+FROM php:apache-bullseye
 
 # Install necessary PHP extensions and clean up apt cache to reduce image size
 RUN apt-get update && apt-get install -y --no-install-recommends \
