@@ -1,6 +1,7 @@
 name: Build & Push Docker image
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '28 5 * * *'  # 2:28 AM UTC-03 = 5:28 AM UTC
   push:
