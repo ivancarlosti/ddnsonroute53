@@ -121,6 +121,7 @@ jobs:
             fi
           else
             echo "{ \"version\": \"$VERSION\", \"author\": \"$AUTHOR\" }" > "$VERSION_FILE"
+            fi
 
       - name: 💾 Commit and push updated manifest.json
         if: steps.check_commits.outputs.commit_count != '0'
