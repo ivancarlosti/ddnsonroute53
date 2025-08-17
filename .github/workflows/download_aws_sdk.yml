@@ -11,20 +11,39 @@ permissions:
 jobs:
   download-aws-sdk:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write
+      actions: write  # needed to dispatch another workflow
+
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Download AWS SDK PHAR
-      run: |
-        mkdir -p vendor
-        wget https://github.com/aws/aws-sdk-php/releases/latest/download/aws.phar -O vendor/aws.phar
-        
-    - name: Commit and push changes
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git add vendor/aws.phar
-        git diff --quiet && git diff --staged --quiet || git commit -m "Update AWS SDK PHAR [▶️]"
-        git push
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download AWS SDK PHAR
+        run: |
+          mkdir -p vendor
+          wget https://github.com/aws/aws-sdk-php/releases/latest/download/aws.phar -O vendor/aws.phar
+
+      - name: Commit and push changes
+        id: commit_step
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add vendor/aws.phar
+
+          # If there are changes, commit & push; set output flag accordingly
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit"
+            echo "changes_committed=false" >> $GITHUB_OUTPUT
+          else
+            git commit -m "Update AWS SDK PHAR [▶️]"
+            git push origin HEAD:main
+            echo "changes_committed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger Build, Push, Publish (release_build.yml)
+        if: steps.commit_step.outputs.changes_committed == 'true'
+        uses: peter-evans/workflow-dispatch@v2
+        with:
+          workflow: release_build.yml
+          ref: main
