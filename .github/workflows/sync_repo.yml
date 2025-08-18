@@ -1,9 +1,9 @@
-name: Update AWS SDK PHAR
+name: Sync Repo
+
 on:
-  schedule:
-    # Runs at 00:18 and 12:18 UTC every day
-    - cron: '18 */12 * * *'
   workflow_dispatch:
+  schedule:
+    - cron: '38 */12 * * *'
 
 permissions:
   contents: write
