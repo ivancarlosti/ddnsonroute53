@@ -40,10 +40,3 @@ jobs:
             git push origin HEAD:main
             echo "changes_committed=true" >> $GITHUB_OUTPUT
           fi
-
-      - name: Trigger Build, Push, Publish (release_build.yml)
-        if: steps.commit_step.outputs.changes_committed == 'true'
-        uses: peter-evans/workflow-dispatch@v2
-        with:
-          workflow: release_build.yml
-          ref: main
