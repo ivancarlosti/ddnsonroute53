@@ -3,7 +3,7 @@ name: Sync Repo
 on:
   workflow_dispatch:
   schedule:
-    - cron: '38 */12 * * *'
+    - cron: '34 3 * * *'  # 03:34 UTC == 00:34 BRT
 
 permissions:
   contents: write
