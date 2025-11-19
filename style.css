@@ -45,13 +45,11 @@ a {
 }
 
 a:hover {
-    color: var(--primary-hover);
     text-decoration: underline;
 }
 
 /* Layout */
 .container {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
 }
@@ -211,4 +209,5 @@ tr:hover {
 
 .gap-2 {
     gap: 0.5rem;
+
 }
