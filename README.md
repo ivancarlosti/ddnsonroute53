@@ -19,15 +19,17 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 * MySQL/MariaDB
 * PHP 8+
 * HTTP server
+* Keycloak for SSO
 
 or
 
 * [Docker Compose](https://docs.docker.com/engine/install/)
+* Keycloak for SSO
 
 ## Hosting instructions (PHP hosting):
 
 * Save the project on your server (download [here](https://github.com/ivancarlosti/ddnsonroute53/releases/latest))
-* Set database information on `dbconfig.php`
+* Set database, keycloak information on `dbconfig.php`
 
 
 ## Hosting instructions (Docker Compose with PHP + nginx + mysqli):
@@ -67,7 +69,7 @@ docker compose pull && docker compose up -d
 * Run `index.php` on browser to login
 * Access `Manage AWS Credentials` menu and fill required fields
 * Access `Manage DDNS Entries` to add, edit and delete DDNS entries
-* (optional) Access `Manage Users` to change user password, create new users, add/edit reCAPTCHA keys
+* (optional) Access `Manage Users` to create new users, add/edit reCAPTCHA keys
 * (optional) Access `View All Logs` to check last 30 days of entries created and/or updated
 
 IAM required policy, remember to update `YOURZONEID` value to related domain zone ID and `subdomain.example.com.` to your domain or subdomain for service usage:
