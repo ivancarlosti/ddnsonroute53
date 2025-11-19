@@ -289,11 +289,30 @@ if ($result = $link->query($sql)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage DDNS Entries</title>
     <link rel="stylesheet" href="style.css">
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <!-- DataTables JS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="table_sort.js"></script>
+    <style>
+        th.sortable {
+            cursor: pointer;
+            position: relative;
+        }
+        th.sortable:hover {
+            background-color: #f0f0f0;
+        }
+        th.sortable::after {
+            content: '↕';
+            position: absolute;
+            right: 8px;
+            opacity: 0.3;
+        }
+        th.sortable.asc::after {
+            content: '↑';
+            opacity: 1;
+        }
+        th.sortable.desc::after {
+            content: '↓';
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -330,11 +349,11 @@ if ($result = $link->query($sql)) {
             <table id="ddnsTable">
                 <thead>
                     <tr>
-                        <th>FQDN</th>
-                        <th>Password</th>
-                        <th>Last IPv4</th>
-                        <th>TTL</th>
-                        <th>Last Update</th>
+                        <th class="sortable" data-type="string">FQDN</th>
+                        <th class="sortable" data-type="string">Password</th>
+                        <th class="sortable" data-type="string">Last IPv4</th>
+                        <th class="sortable" data-type="number">TTL</th>
+                        <th class="sortable" data-type="string">Last Update</th>
                         <th>Update IP/TTL</th>
                         <th>Logs</th>
                         <th>Action</th>
@@ -372,17 +391,5 @@ if ($result = $link->query($sql)) {
 
         <p><a href="dashboard.php">Back to Dashboard</a></p>
     </div>
-
-    <!-- Initialize DataTables -->
-    <script>
-        $(document).ready(function() {
-            $('#ddnsTable').DataTable({
-                "order": [[0, "asc"]], // Default sorting by FQDN (first column) in ascending order
-                "columnDefs": [
-                    { "orderable": false, "targets": [5, 6, 7] } // Disable sorting for Update IP/TTL, Action, and Logs columns
-                ]
-            });
-        });
-    </script>
 </body>
 </html>

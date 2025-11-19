@@ -117,8 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_admin'])) {
 <html>
 <head>
     <title>Setup</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <title>Setup</title>
 </head>
 <body>
     <h1>Setup</h1>
