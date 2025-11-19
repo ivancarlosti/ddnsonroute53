@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_admin'])) {
             "CREATE TABLE users (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 username VARCHAR(255) NOT NULL UNIQUE,
-                password_hash VARCHAR(255) NOT NULL
+                password_hash VARCHAR(255) NULL
             )",
             "CREATE TABLE aws_credentials (
                 id INT AUTO_INCREMENT PRIMARY KEY,

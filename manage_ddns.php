@@ -60,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
 
     // Validate input
     if (empty($ddns_fqdn) || empty($ddns_password) || empty($initial_ip) || empty($ttl)) {
-        echo "DDNS FQDN, password, initial IP, and TTL are required.";
+        $error = "DDNS FQDN, password, initial IP, and TTL are required.";
     } elseif (!filter_var($initial_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-        echo "Invalid IPv4 address.";
+        $error = "Invalid IPv4 address.";
     } else {
         // Check if the DDNS FQDN is a subdomain of the approved FQDN
         if (strpos($ddns_fqdn, $approved_fqdn) === false || !preg_match('/^[a-zA-Z0-9-]+\.' . preg_quote($approved_fqdn, '/') . '$/', $ddns_fqdn)) {
-            echo "DDNS FQDN must be a subdomain of $approved_fqdn.";
+            $error = "DDNS FQDN must be a subdomain of $approved_fqdn.";
         } else {
             // Check if the DDNS entry already exists
             $check_sql = "SELECT id FROM ddns_entries WHERE ddns_fqdn = ?";
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
                 $check_stmt->store_result();
 
                 if ($check_stmt->num_rows > 0) {
-                    echo "DDNS entry with this FQDN already exists.";
+                    $error = "DDNS entry with this FQDN already exists.";
                 } else {
                     // Prepare the DNS record
                     $changeBatch = [
@@ -122,14 +122,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_ddns'])) {
                                     $log_stmt->close();
                                 }
 
-                                echo "DDNS entry '$ddns_fqdn' added successfully!";
+                                $success = "DDNS entry '$ddns_fqdn' added successfully!";
                             } else {
-                                echo "Error adding DDNS entry: " . $insert_stmt->error;
+                                $error = "Error adding DDNS entry: " . $insert_stmt->error;
                             }
                             $insert_stmt->close();
                         }
                     } catch (AwsException $e) {
-                        echo "Error updating Route53: " . $e->getAwsErrorMessage();
+                        $error = "Error updating Route53: " . $e->getAwsErrorMessage();
                     }
                 }
                 $check_stmt->close();
@@ -146,9 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_ip'])) {
 
     // Validate input
     if (empty($new_ip) || empty($new_ttl)) {
-        echo "IP and TTL are required.";
+        $error = "IP and TTL are required.";
     } elseif (!filter_var($new_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-        echo "Invalid IPv4 address.";
+        $error = "Invalid IPv4 address.";
     } else {
         // Fetch the DDNS entry
         $fetch_sql = "SELECT ddns_fqdn FROM ddns_entries WHERE id = ?";
@@ -202,14 +202,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_ip'])) {
                             $log_stmt->close();
                         }
 
-                        echo "IP and TTL updated successfully for '$ddns_fqdn'!";
+                        $success = "IP and TTL updated successfully for '$ddns_fqdn'!";
                     } else {
-                        echo "Error updating IP and TTL: " . $update_stmt->error;
+                        $error = "Error updating IP and TTL: " . $update_stmt->error;
                     }
                     $update_stmt->close();
                 }
             } catch (AwsException $e) {
-                echo "Error updating Route53: " . $e->getAwsErrorMessage();
+                $error = "Error updating Route53: " . $e->getAwsErrorMessage();
             }
         }
     }
@@ -260,15 +260,14 @@ if (isset($_GET['delete'])) {
             if ($delete_stmt = $link->prepare($delete_sql)) {
                 $delete_stmt->bind_param("i", $ddns_id);
                 if ($delete_stmt->execute()) {
-                    // Removed logging code here
-                    echo "DDNS entry deleted successfully and Route53 record removed!";
+                    $success = "DDNS entry deleted successfully and Route53 record removed!";
                 } else {
-                    echo "Error deleting DDNS entry: " . $delete_stmt->error;
+                    $error = "Error deleting DDNS entry: " . $delete_stmt->error;
                 }
                 $delete_stmt->close();
             }
         } catch (AwsException $e) {
-            echo "Error updating Route53: " . $e->getAwsErrorMessage();
+            $error = "Error updating Route53: " . $e->getAwsErrorMessage();
         }
     }
 }
@@ -284,73 +283,95 @@ if ($result = $link->query($sql)) {
 }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage DDNS Entries</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <link rel="stylesheet" href="style.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
     <!-- DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 </head>
 <body>
-    <h1>Manage DDNS Entries</h1>
-    <h2>Add New DDNS Entry</h2>
-    <form method="post">
-        <label>DDNS FQDN:</label>
-        <input type="text" name="ddns_fqdn" required><br>
-        <label>DDNS Password:</label>
-        <input type="password" name="ddns_password" required><br>
-        <label>Initial IP:</label>
-        <input type="text" name="initial_ip" required><br>
-        <label>TTL (Time to Live):</label>
-        <input type="number" name="ttl" min="1" required><br>
-        <input type="submit" name="add_ddns" value="Add DDNS Entry">
-    </form>
+    <div class="container">
+        <h1>Manage DDNS Entries</h1>
+        
+        <?php if (isset($error)): ?>
+            <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
+        <?php if (isset($success)): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+        <?php endif; ?>
 
-    <h2>DDNS Entries</h2>
-    <table id="ddnsTable" border="1">
-        <thead>
-            <tr>
-                <th>FQDN</th>
-                <th>Password</th>
-                <th>Last IPv4</th>
-                <th>TTL</th>
-                <th>Last Update</th>
-                <th>Update IP/TTL</th>
-                <th>Logs</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($ddns_entries as $entry): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($entry['ddns_fqdn']); ?></td>
-                <td><?php echo htmlspecialchars($entry['ddns_password']); ?></td>
-                <td><?php echo htmlspecialchars($entry['last_ipv4']); ?></td>
-                <td><?php echo htmlspecialchars($entry['ttl']); ?></td>
-                <td><?php echo htmlspecialchars($entry['last_update']); ?></td>
-                <td>
-                    <form method="post" style="display:inline;">
-                        <input type="hidden" name="ddns_id" value="<?php echo $entry['id']; ?>">
-                        <input type="text" name="new_ip" placeholder="New IP" required><br>
-                        <input type="number" name="new_ttl" placeholder="New TTL" min="1" required><br>
-                        <input type="submit" name="update_ip" value="Update IP/TTL">
-                    </form>
-                </td>
-                <td>
-                    <a href="view_logs.php?ddns_id=<?php echo $entry['id']; ?>">View Logs</a>
-                </td>
-                <td>
-                    <a href="manage_ddns.php?delete=<?php echo $entry['id']; ?>" onclick="return confirm('Are you sure you want to delete this DDNS entry?');">Delete</a>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+        <div class="card">
+            <h2>Add New DDNS Entry</h2>
+            <form method="post">
+                <label>DDNS FQDN:</label>
+                <input type="text" name="ddns_fqdn" required placeholder="subdomain.<?php echo htmlspecialchars($approved_fqdn); ?>">
+                
+                <label>DDNS Password:</label>
+                <input type="password" name="ddns_password" required>
+                
+                <label>Initial IP:</label>
+                <input type="text" name="initial_ip" required value="<?php echo $_SERVER['REMOTE_ADDR']; ?>">
+                
+                <label>TTL (Time to Live):</label>
+                <input type="number" name="ttl" min="1" required value="300">
+                
+                <input type="submit" name="add_ddns" value="Add DDNS Entry">
+            </form>
+        </div>
 
-    <p><a href="dashboard.php">Back to Dashboard</a></p>
+        <div class="card">
+            <h2>DDNS Entries</h2>
+            <table id="ddnsTable">
+                <thead>
+                    <tr>
+                        <th>FQDN</th>
+                        <th>Password</th>
+                        <th>Last IPv4</th>
+                        <th>TTL</th>
+                        <th>Last Update</th>
+                        <th>Update IP/TTL</th>
+                        <th>Logs</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($ddns_entries as $entry): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($entry['ddns_fqdn']); ?></td>
+                        <td><?php echo htmlspecialchars($entry['ddns_password']); ?></td>
+                        <td><?php echo htmlspecialchars($entry['last_ipv4']); ?></td>
+                        <td><?php echo htmlspecialchars($entry['ttl']); ?></td>
+                        <td><?php echo htmlspecialchars($entry['last_update']); ?></td>
+                        <td>
+                            <form method="post" style="display:inline; max-width: none;">
+                                <input type="hidden" name="ddns_id" value="<?php echo $entry['id']; ?>">
+                                <div class="flex gap-2">
+                                    <input type="text" name="new_ip" placeholder="New IP" required style="width: 120px;">
+                                    <input type="number" name="new_ttl" placeholder="TTL" min="1" required style="width: 80px;">
+                                    <input type="submit" name="update_ip" value="Update" style="padding: 0.5rem;">
+                                </div>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="view_logs.php?ddns_id=<?php echo $entry['id']; ?>" class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">Logs</a>
+                        </td>
+                        <td>
+                            <a href="manage_ddns.php?delete=<?php echo $entry['id']; ?>" onclick="return confirm('Are you sure you want to delete this DDNS entry?');" class="btn btn-danger" style="padding: 0.25rem 0.5rem; font-size: 0.875rem;">Delete</a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <p><a href="dashboard.php">Back to Dashboard</a></p>
+    </div>
 
     <!-- Initialize DataTables -->
     <script>

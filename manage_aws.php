@@ -30,13 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($stmt = $link->prepare($sql)) {
         $stmt->bind_param("sssss", $region, $access_key_id, $secret_access_key, $hosted_zone_id, $approved_fqdn);
         if ($stmt->execute()) {
-            echo "AWS credentials updated successfully!";
+            $success = "AWS credentials updated successfully!";
         } else {
-            echo "Error updating AWS credentials: " . $stmt->error;
+            $error = "Error updating AWS credentials: " . $stmt->error;
         }
         $stmt->close();
     } else {
-        echo "Error preparing SQL statement: " . $link->error;
+        $error = "Error preparing SQL statement: " . $link->error;
     }
 }
 
@@ -53,40 +53,62 @@ if ($result = $link->query($sql)) {
 $link->close();
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage AWS Credentials</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Manage AWS Credentials</h1>
-    <?php if (!empty($current_credentials)): ?>
-        <p>Current AWS credentials:</p>
-        <ul>
-            <li><strong>Region:</strong> <?php echo htmlspecialchars($current_credentials['region']); ?></li>
-            <li><strong>Access Key ID:</strong> <?php echo htmlspecialchars($current_credentials['access_key_id']); ?></li>
-            <li><strong>Secret Access Key:</strong> <?php echo htmlspecialchars($current_credentials['secret_access_key']); ?></li>
-            <li><strong>Hosted Zone ID:</strong> <?php echo htmlspecialchars($current_credentials['hosted_zone_id']); ?></li>
-            <li><strong>Approved FQDN:</strong> <?php echo htmlspecialchars($current_credentials['approved_fqdn']); ?></li>
-        </ul>
-    <?php else: ?>
-        <p>No AWS credentials found in the database.</p>
-    <?php endif; ?>
+    <div class="container">
+        <h1>Manage AWS Credentials</h1>
+        
+        <?php if (isset($error)): ?>
+            <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
+        <?php if (isset($success)): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+        <?php endif; ?>
 
-    <h2>Update AWS Credentials</h2>
-    <form method="post">
-        <label>Region:</label>
-        <input type="text" name="region" value="<?php echo htmlspecialchars($current_credentials['region'] ?? ''); ?>" required><br>
-        <label>Access Key ID:</label>
-        <input type="text" name="access_key_id" value="<?php echo htmlspecialchars($current_credentials['access_key_id'] ?? ''); ?>" required><br>
-        <label>Secret Access Key:</label>
-        <input type="text" name="secret_access_key" value="<?php echo htmlspecialchars($current_credentials['secret_access_key'] ?? ''); ?>" required><br>
-        <label>Hosted Zone ID:</label>
-        <input type="text" name="hosted_zone_id" value="<?php echo htmlspecialchars($current_credentials['hosted_zone_id'] ?? ''); ?>" required><br>
-        <label>Approved FQDN:</label>
-        <input type="text" name="approved_fqdn" value="<?php echo htmlspecialchars($current_credentials['approved_fqdn'] ?? ''); ?>" required><br>
-        <input type="submit" value="Update Credentials">
-    </form>
+        <div class="card">
+            <?php if (!empty($current_credentials)): ?>
+                <h2>Current AWS Credentials</h2>
+                <ul>
+                    <li><strong>Region:</strong> <?php echo htmlspecialchars($current_credentials['region']); ?></li>
+                    <li><strong>Access Key ID:</strong> <?php echo htmlspecialchars($current_credentials['access_key_id']); ?></li>
+                    <li><strong>Secret Access Key:</strong> <?php echo htmlspecialchars($current_credentials['secret_access_key']); ?></li>
+                    <li><strong>Hosted Zone ID:</strong> <?php echo htmlspecialchars($current_credentials['hosted_zone_id']); ?></li>
+                    <li><strong>Approved FQDN:</strong> <?php echo htmlspecialchars($current_credentials['approved_fqdn']); ?></li>
+                </ul>
+            <?php else: ?>
+                <p>No AWS credentials found in the database.</p>
+            <?php endif; ?>
+        </div>
 
-    <p><a href="dashboard.php">Back to Dashboard</a></p>
+        <div class="card">
+            <h2>Update AWS Credentials</h2>
+            <form method="post">
+                <label>Region:</label>
+                <input type="text" name="region" value="<?php echo htmlspecialchars($current_credentials['region'] ?? ''); ?>" required>
+                
+                <label>Access Key ID:</label>
+                <input type="text" name="access_key_id" value="<?php echo htmlspecialchars($current_credentials['access_key_id'] ?? ''); ?>" required>
+                
+                <label>Secret Access Key:</label>
+                <input type="text" name="secret_access_key" value="<?php echo htmlspecialchars($current_credentials['secret_access_key'] ?? ''); ?>" required>
+                
+                <label>Hosted Zone ID:</label>
+                <input type="text" name="hosted_zone_id" value="<?php echo htmlspecialchars($current_credentials['hosted_zone_id'] ?? ''); ?>" required>
+                
+                <label>Approved FQDN:</label>
+                <input type="text" name="approved_fqdn" value="<?php echo htmlspecialchars($current_credentials['approved_fqdn'] ?? ''); ?>" required>
+                
+                <input type="submit" value="Update Credentials">
+            </form>
+        </div>
+
+        <p><a href="dashboard.php">Back to Dashboard</a></p>
+    </div>
 </body>
 </html>

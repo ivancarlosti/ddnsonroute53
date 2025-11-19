@@ -72,64 +72,60 @@ $stmt->close();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $ddns_id ? "Logs for DDNS #$ddns_id" : "All DDNS Logs" ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container mt-4">
+    <div class="container">
         <h1><?= $ddns_id ? "Logs for DDNS Entry #$ddns_id" : "All DDNS Logs" ?></h1>
         
-        <!-- Logs Table -->
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>FQDN</th>
-                    <th>Action</th>
-                    <th>IP</th>
-                    <th>Details</th>
-                    <th>Timestamp</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($logs as $log): ?>
-                <tr>
-                    <td><?= htmlspecialchars($log['ddns_fqdn'] ?? 'N/A') ?></td>
-                    <td><?= htmlspecialchars($log['action']) ?></td>
-                    <td><?= htmlspecialchars($log['ip_address']) ?></td>
-                    <td><?= htmlspecialchars($log['details']) ?></td>
-                    <td><?= htmlspecialchars($log['timestamp']) ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <div class="card">
+            <!-- Logs Table -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>FQDN</th>
+                        <th>Action</th>
+                        <th>IP</th>
+                        <th>Details</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($logs as $log): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($log['ddns_fqdn'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($log['action']) ?></td>
+                        <td><?= htmlspecialchars($log['ip_address']) ?></td>
+                        <td><?= htmlspecialchars($log['details']) ?></td>
+                        <td><?= htmlspecialchars($log['timestamp']) ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
 
-        <!-- Pagination -->
-        <nav>
-            <ul class="pagination">
+            <!-- Pagination -->
+            <div class="flex gap-2 mt-4" style="justify-content: center;">
                 <?php if ($page > 1): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>">Previous</a>
-                    </li>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page - 1])) ?>" class="btn">Previous</a>
                 <?php endif; ?>
 
                 <?php for ($i = 1; $i <= $pages; $i++): ?>
-                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>"><?= $i ?></a>
-                    </li>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>" class="btn <?= $i == $page ? 'btn-primary' : '' ?>" style="<?= $i == $page ? 'background-color: var(--primary-hover);' : '' ?>"><?= $i ?></a>
                 <?php endfor; ?>
 
                 <?php if ($page < $pages): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>">Next</a>
-                    </li>
+                    <a href="?<?= http_build_query(array_merge($_GET, ['page' => $page + 1])) ?>" class="btn">Next</a>
                 <?php endif; ?>
-            </ul>
-        </nav>
+            </div>
+        </div>
         
-        <p class="mt-3">
-            <a href="<?= $ddns_id ? 'manage_ddns.php' : 'dashboard.php' ?>" class="btn btn-secondary">
+        <p class="mt-4">
+            <a href="<?= $ddns_id ? 'manage_ddns.php' : 'dashboard.php' ?>">
                 Back to <?= $ddns_id ? 'DDNS Management' : 'Dashboard' ?>
             </a>
         </p>
