@@ -26,12 +26,6 @@ or
 * [Docker Compose](https://docs.docker.com/engine/install/)
 * Keycloak for SSO
 
-## Hosting instructions (PHP hosting):
-
-* Save the project on your server (download [here](https://github.com/ivancarlosti/ddnsonroute53/releases/latest))
-* Set database, keycloak information on `dbconfig.php`
-
-
 ## Hosting instructions (Docker Compose with PHP + nginx + mysqli):
 
 * Download `/docker` files on your server, example:
@@ -41,23 +35,6 @@ curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnson
 ```
 * Edit both `.env`, `docker-compose.yml` files
   * This Docker Compose contains only PHP + nginx + mysqli as webserver, you can use a reverse proxy for SSL, default exposed port is `5666`, an external MySQL/MariaDB is required
-* Start Docker Compose, example:
-```
-docker compose pull && docker compose up -d
-```
-
-## Hosting instructions (Docker Compose with PHP + nginx + mysqli + MariaDB + Traefik):
-
-* Download `/docker` files on your server, example:
-```
-curl -o .env https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/.env
-curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/docker-compose-full.yml
-```
-* Edit both `.env`, `docker-compose.yml` files
-  * This Docker Compose contains following services, adapt it for your needs:
-    * PHP + nginx + mysqli as webserver
-    * MariaDB as database
-    * Traefik to get automatic SSL certificate and reverse proxy
 * Start Docker Compose, example:
 ```
 docker compose pull && docker compose up -d
