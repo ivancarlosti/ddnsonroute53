@@ -2,8 +2,8 @@ FROM php:8.4-fpm-alpine
 
 # Install Nginx and MariaDB client; install PHP extensions (mysqli) and clean up
 RUN apk add --no-cache --update nginx \
-    && docker-php-ext-install mysqli \
-    && rm -rf /var/cache/apk/* /tmp/*
+  && docker-php-ext-install mysqli \
+  && rm -rf /var/cache/apk/* /tmp/*
 
 # Copy your application code
 COPY . /var/www/html/
@@ -23,7 +23,7 @@ RUN printf '%s\n' \
   '    server {' \
   '        listen       80;' \
   '        server_name  localhost;' \
-  '        root   /var/www/html;' \
+  '        root   /var/www/html/public;' \
   '' \
   '        index  index.php index.html;' \
   '' \

@@ -5,7 +5,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
-include 'dbconfig.php';
+include '../dbconfig.php';
 
 // Fetch the logged-in user's ID and username
 $logged_in_user_id = $_SESSION['id'];
@@ -120,6 +120,7 @@ if ($result = $link->query($sql)) {
 
         <div class="card">
             <h2>User List</h2>
+            <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
@@ -148,6 +149,7 @@ if ($result = $link->query($sql)) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
         </div>
 
         <p><a href="dashboard.php">Back to Dashboard</a></p>

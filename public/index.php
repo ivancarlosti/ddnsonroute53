@@ -4,7 +4,8 @@ session_start();
 error_reporting(0);
 ini_set('display_errors', 0);
 
-function handleFatalError() {
+function handleFatalError()
+{
     $error = error_get_last();
     if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
         die("A fatal error occurred. Please check your configuration.");
@@ -12,14 +13,15 @@ function handleFatalError() {
 }
 register_shutdown_function('handleFatalError');
 
-include 'dbconfig.php';
+include '../dbconfig.php';
 
 if ($link === null || $link->connect_error) {
     die("Database connection failed.");
 }
 
 // Helper to check table existence
-function tableExists($link, $tableName) {
+function tableExists($link, $tableName)
+{
     $sql = "SHOW TABLES LIKE '$tableName'";
     $result = $link->query($sql);
     return $result->num_rows > 0;
@@ -112,28 +114,32 @@ $loginUrl = KEYCLOAK_BASE_URL . "/realms/" . KEYCLOAK_REALM . "/protocol/openid-
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - DDNS Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="login-container">
         <div class="card login-card text-center">
             <h1>DDNS Manager</h1>
             <p class="mb-4" style="color: #94a3b8;">Secure Access Control</p>
-            
+
             <?php if (isset($error)): ?>
                 <div class="alert alert-error">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
             <?php endif; ?>
 
-            <a href="<?php echo htmlspecialchars($loginUrl); ?>" class="btn" style="width: 100%; box-sizing: border-box;">
+            <a href="<?php echo htmlspecialchars($loginUrl); ?>" class="btn"
+                style="width: 100%; box-sizing: border-box;">
                 Login with SSO
             </a>
         </div>
     </div>
 </body>
+
 </html>

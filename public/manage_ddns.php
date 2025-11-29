@@ -5,8 +5,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
-include 'dbconfig.php';
-require 'vendor/aws.phar';
+include '../dbconfig.php';
+require '../vendor/aws.phar';
 
 use Aws\Route53\Route53Client;
 use Aws\Exception\AwsException;
@@ -346,6 +346,7 @@ if ($result = $link->query($sql)) {
 
         <div class="card">
             <h2>DDNS Entries</h2>
+            <div class="table-responsive">
             <table id="ddnsTable">
                 <thead>
                     <tr>
@@ -387,6 +388,7 @@ if ($result = $link->query($sql)) {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
         </div>
 
         <p><a href="dashboard.php">Back to Dashboard</a></p>

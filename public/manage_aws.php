@@ -5,7 +5,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
-include 'dbconfig.php';
+include '../dbconfig.php';
 
 // Handle form submission to update AWS credentials
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -54,16 +54,18 @@ $link->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage AWS Credentials</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <h1>Manage AWS Credentials</h1>
-        
+
         <?php if (isset($error)): ?>
             <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
@@ -76,10 +78,14 @@ $link->close();
                 <h2>Current AWS Credentials</h2>
                 <ul>
                     <li><strong>Region:</strong> <?php echo htmlspecialchars($current_credentials['region']); ?></li>
-                    <li><strong>Access Key ID:</strong> <?php echo htmlspecialchars($current_credentials['access_key_id']); ?></li>
-                    <li><strong>Secret Access Key:</strong> <?php echo htmlspecialchars($current_credentials['secret_access_key']); ?></li>
-                    <li><strong>Hosted Zone ID:</strong> <?php echo htmlspecialchars($current_credentials['hosted_zone_id']); ?></li>
-                    <li><strong>Approved FQDN:</strong> <?php echo htmlspecialchars($current_credentials['approved_fqdn']); ?></li>
+                    <li><strong>Access Key ID:</strong>
+                        <?php echo htmlspecialchars($current_credentials['access_key_id']); ?></li>
+                    <li><strong>Secret Access Key:</strong>
+                        <?php echo htmlspecialchars($current_credentials['secret_access_key']); ?></li>
+                    <li><strong>Hosted Zone ID:</strong>
+                        <?php echo htmlspecialchars($current_credentials['hosted_zone_id']); ?></li>
+                    <li><strong>Approved FQDN:</strong>
+                        <?php echo htmlspecialchars($current_credentials['approved_fqdn']); ?></li>
                 </ul>
             <?php else: ?>
                 <p>No AWS credentials found in the database.</p>
@@ -90,20 +96,25 @@ $link->close();
             <h2>Update AWS Credentials</h2>
             <form method="post">
                 <label>Region:</label>
-                <input type="text" name="region" value="<?php echo htmlspecialchars($current_credentials['region'] ?? ''); ?>" required>
-                
+                <input type="text" name="region"
+                    value="<?php echo htmlspecialchars($current_credentials['region'] ?? ''); ?>" required>
+
                 <label>Access Key ID:</label>
-                <input type="text" name="access_key_id" value="<?php echo htmlspecialchars($current_credentials['access_key_id'] ?? ''); ?>" required>
-                
+                <input type="text" name="access_key_id"
+                    value="<?php echo htmlspecialchars($current_credentials['access_key_id'] ?? ''); ?>" required>
+
                 <label>Secret Access Key:</label>
-                <input type="text" name="secret_access_key" value="<?php echo htmlspecialchars($current_credentials['secret_access_key'] ?? ''); ?>" required>
-                
+                <input type="text" name="secret_access_key"
+                    value="<?php echo htmlspecialchars($current_credentials['secret_access_key'] ?? ''); ?>" required>
+
                 <label>Hosted Zone ID:</label>
-                <input type="text" name="hosted_zone_id" value="<?php echo htmlspecialchars($current_credentials['hosted_zone_id'] ?? ''); ?>" required>
-                
+                <input type="text" name="hosted_zone_id"
+                    value="<?php echo htmlspecialchars($current_credentials['hosted_zone_id'] ?? ''); ?>" required>
+
                 <label>Approved FQDN:</label>
-                <input type="text" name="approved_fqdn" value="<?php echo htmlspecialchars($current_credentials['approved_fqdn'] ?? ''); ?>" required>
-                
+                <input type="text" name="approved_fqdn"
+                    value="<?php echo htmlspecialchars($current_credentials['approved_fqdn'] ?? ''); ?>" required>
+
                 <input type="submit" value="Update Credentials">
             </form>
         </div>
@@ -111,4 +122,5 @@ $link->close();
         <p><a href="dashboard.php">Back to Dashboard</a></p>
     </div>
 </body>
+
 </html>

@@ -2,7 +2,8 @@
 error_reporting(0);
 ini_set('display_errors', 0);
 
-function handleFatalError() {
+function handleFatalError()
+{
     $error = error_get_last();
     if ($error !== null && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
         die("A fatal error occurred. Please check your configuration and try again.");
@@ -11,11 +12,11 @@ function handleFatalError() {
 
 register_shutdown_function('handleFatalError');
 
-if (!file_exists('dbconfig.php')) {
+if (!file_exists('../dbconfig.php')) {
     die("The database configuration file (dbconfig.php) is missing. Please create it with the correct database credentials.");
 }
 
-include 'dbconfig.php';
+include '../dbconfig.php';
 
 if ($link === null || $link->connect_error) {
     die("Database connection failed. Please check the dbconfig.php file and ensure the database credentials are correct.");
@@ -115,10 +116,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_admin'])) {
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Setup</title>
     <title>Setup</title>
 </head>
+
 <body>
     <h1>Setup</h1>
     <p>Welcome to the setup wizard. This script will help you prepare a new installation.</p>
@@ -134,4 +137,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['create_admin'])) {
         </form>
     <?php endif; ?>
 </body>
+
 </html>
