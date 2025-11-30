@@ -18,8 +18,6 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 
 * [Docker Compose](https://docs.docker.com/engine/install/)
 * MySQL/MariaDB
-* PHP 8+
-* HTTP server
 * Keycloak for SSO
 
 ## Hosting instructions (Docker Compose with PHP + nginx + mysqli):
