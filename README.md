@@ -1,6 +1,10 @@
 # DDNS on Route53
 Router friendly client to update AWS Route53 entries for Dynamic DNS funtionality
 
+<!-- buttons -->
+
+<!-- endbuttons -->
+
 ## Requirement:
 
 * [Docker Compose](https://docs.docker.com/engine/install/)
