@@ -1,0 +1,22 @@
+name: ddnsonroute53
+
+services:
+  ddnsonroute53:
+    image: git.icc.gg/ivancarlos/ddnsonroute53:latest
+    env_file: .env
+    container_name: ddnsonroute53
+    restart: unless-stopped
+    ports:
+      - "5666:80"
+    environment:
+      - DB_SERVER=${DB_SERVER}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - KEYCLOAK_BASE_URL=${KEYCLOAK_BASE_URL}
+      - KEYCLOAK_REALM=${KEYCLOAK_REALM}
+      - KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - KEYCLOAK_REDIRECT_URI=${KEYCLOAK_REDIRECT_URI}
+    extra_hosts:
+      - host.docker.internal:host-gateway
