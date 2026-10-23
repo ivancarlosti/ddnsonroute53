@@ -14,9 +14,30 @@ Router friendly client to update AWS Route53 entries for Dynamic DNS funtionalit
 [![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-2.1-4baaaa)](https://github.com/ivancarlosti/ddnsonroute53?tab=coc-ov-file)
 <!-- endbuttons -->
 
+## Screenshots
+
+Captured from a demo instance running PHP 8.5 with sample data.
+
+| Login (Keycloak SSO) | Setup wizard |
+| --- | --- |
+| ![Login screen with the Login with SSO button](docs/screenshots/01-login.png) | ![Setup wizard to create the first admin user](docs/screenshots/02-setup-wizard.png) |
+
+| Dashboard | Manage DDNS Entries |
+| --- | --- |
+| ![Dashboard with the DDNS update cURL command](docs/screenshots/03-dashboard.png) | ![Manage DDNS entries with add, update and delete actions](docs/screenshots/04-manage-ddns.png) |
+
+| Manage AWS Credentials | Manage Users |
+| --- | --- |
+| ![Manage AWS credentials form](docs/screenshots/05-manage-aws.png) | ![Manage users list with SSO and password auth types](docs/screenshots/06-manage-users.png) |
+
+| View All Logs |
+| --- |
+| ![All DDNS logs with pagination](docs/screenshots/07-view-logs.png) |
+
 ## Requirement:
 
 * [Docker Compose](https://docs.docker.com/engine/install/)
+* PHP 8.5 (bundled in the Docker image)
 * Domain zone on AWS Route 53
 * MySQL/MariaDB
 * Keycloak for SSO

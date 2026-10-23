@@ -61,7 +61,6 @@ if (isset($_GET['code'])) {
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
-    curl_close($ch);
 
     $tokenData = json_decode($response, true);
 
@@ -73,7 +72,6 @@ if (isset($_GET['code'])) {
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer " . $tokenData['access_token']]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $userInfoResponse = curl_exec($ch);
-        curl_close($ch);
 
         $userInfo = json_decode($userInfoResponse, true);
         $email = $userInfo['email'] ?? $userInfo['preferred_username'] ?? null;

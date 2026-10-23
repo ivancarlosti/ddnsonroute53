@@ -1,4 +1,4 @@
-FROM php:8.4-fpm-alpine
+FROM php:8.5-fpm-alpine
 
 # Install Nginx and MariaDB client; install PHP extensions (mysqli) and clean up
 RUN apk add --no-cache --update nginx git unzip \
