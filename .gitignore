@@ -1,0 +1,2 @@
+# Real environment file with secrets. docker/ itself stays tracked.
+docker/.env

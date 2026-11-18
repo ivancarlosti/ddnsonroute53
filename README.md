@@ -46,10 +46,12 @@ Captured from a demo instance running PHP 8.5 with sample data.
 
 * Download `/docker` files on your server, example:
 ```
-curl -o .env https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/.env
+curl -o .env.example https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/.env.example
 curl -o docker-compose.yml https://raw.githubusercontent.com/ivancarlosti/ddnsonroute53/main/docker/docker-compose.yml
+cp .env.example .env
 ```
 * Edit both `.env`, `docker-compose.yml` files
+  * `.env.example` is the fully commented template; your real values (and secrets) belong in `.env`, which is not tracked by git
   * This Docker Compose contains only PHP + nginx + mysqli as webserver, you can use a reverse proxy for SSL, default exposed port is `5666`, an external MySQL/MariaDB is required
 * Start Docker Compose, example:
 ```
@@ -60,9 +62,11 @@ docker compose pull && docker compose up -d
 
 * Run `setup.php` on browser to set username and password
 * Run `index.php` on browser to login
+  * If Keycloak authenticates an account that is not authorized, use `Sign out of SSO and try another account` to end the Keycloak session and log in with a different user
 * Access `Manage AWS Credentials` menu and fill required fields
 * Access `Manage DDNS Entries` to add, edit and delete DDNS entries
 * (optional) Access `Manage Users` to create new users, add/edit reCAPTCHA keys
+* (optional) Set `RESTRICT_USERS` in `.env` to allow only specific e-mails and/or domains to use SSO — see [docs/configuration.md](docs/configuration.md)
 * (optional) Access `View All Logs` to check last 30 days of entries created and/or updated
 
 IAM required policy, remember to update `YOURZONEID` value to related domain zone ID and `subdomain.example.com.` to your domain or subdomain for service usage:

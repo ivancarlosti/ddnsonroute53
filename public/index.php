@@ -14,6 +14,7 @@ function handleFatalError()
 register_shutdown_function('handleFatalError');
 
 include '../dbconfig.php';
+require_once __DIR__ . '/sso.php';
 
 if ($link === null || $link->connect_error) {
     die("Database connection failed.");
@@ -34,16 +35,41 @@ if (!tableExists($link, 'users')) {
 
 // --- Keycloak SSO Logic ---
 
-// 1. Handle Logout
+// 1. Handle Logout (dashboard button and "try another account" on this page)
 if (isset($_GET['logout'])) {
+    // Keep the ID token so Keycloak can end the SSO session without showing a
+    // confirmation screen again.
+    $idToken = isset($_SESSION['id_token']) && is_string($_SESSION['id_token'])
+        ? $_SESSION['id_token']
+        : null;
+
+    $_SESSION = [];
+    if (ini_get('session.use_cookies')) {
+        $cookieParams = session_get_cookie_params();
+        setcookie(session_name(), '', [
+            'expires' => time() - 42000,
+            'path' => $cookieParams['path'],
+            'domain' => $cookieParams['domain'],
+            'secure' => $cookieParams['secure'],
+            'httponly' => $cookieParams['httponly'],
+            'samesite' => $cookieParams['samesite'] ?? 'Lax',
+        ]);
+    }
     session_destroy();
-    $logoutUrl = KEYCLOAK_BASE_URL . "/realms/" . KEYCLOAK_REALM . "/protocol/openid-connect/logout?redirect_uri=" . urlencode(KEYCLOAK_REDIRECT_URI);
-    header("Location: $logoutUrl");
+
+    header('Location: ' . keycloak_logout_url($idToken));
     exit;
 }
 
-// 2. Handle OAuth Callback
-if (isset($_GET['code'])) {
+// 2. Keycloak redirected back without a code (user cancelled or IdP error)
+if (isset($_GET['error'])) {
+    $_SESSION['sso_error'] = "SSO login was cancelled or failed. Please try again.";
+    header('Location: index.php');
+    exit;
+}
+
+// 3. Handle OAuth Callback
+if (isset($_GET['code']) && is_string($_GET['code'])) {
     $code = $_GET['code'];
     $tokenUrl = KEYCLOAK_BASE_URL . "/realms/" . KEYCLOAK_REALM . "/protocol/openid-connect/token";
 
@@ -65,6 +91,11 @@ if (isset($_GET['code'])) {
     $tokenData = json_decode($response, true);
 
     if (isset($tokenData['access_token'])) {
+        // Keep the ID token so "sign out" can end the Keycloak session.
+        $_SESSION['id_token'] = isset($tokenData['id_token']) && is_string($tokenData['id_token'])
+            ? $tokenData['id_token']
+            : null;
+
         // Get User Info
         $userInfoUrl = KEYCLOAK_BASE_URL . "/realms/" . KEYCLOAK_REALM . "/protocol/openid-connect/userinfo";
         $ch = curl_init();
@@ -75,8 +106,16 @@ if (isset($_GET['code'])) {
 
         $userInfo = json_decode($userInfoResponse, true);
         $email = $userInfo['email'] ?? $userInfo['preferred_username'] ?? null;
+        $email = is_string($email) ? trim($email) : null;
 
-        if ($email) {
+        if (!$email) {
+            $_SESSION['sso_error'] = "Could not retrieve email from identity provider.";
+        } elseif (!sso_email_allowed($email)) {
+            // Fail closed: when RESTRICT_USERS is set, accounts outside the
+            // list are denied even if they exist in the local database.
+            error_log("SSO denied by RESTRICT_USERS: {$email}");
+            $_SESSION['sso_error'] = "Access Denied: {$email} is not allowed to use SSO.";
+        } else {
             // Check if user exists in local DB
             $stmt = $link->prepare("SELECT id, username FROM users WHERE username = ?");
             $stmt->bind_param("s", $email);
@@ -85,29 +124,35 @@ if (isset($_GET['code'])) {
 
             if ($result->num_rows === 1) {
                 $user = $result->fetch_assoc();
+                unset($_SESSION['sso_error']);
+                session_regenerate_id(true);
                 $_SESSION['loggedin'] = true;
                 $_SESSION['id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 header("Location: dashboard.php");
                 exit;
-            } else {
-                $error = "Access Denied: User not found in local database.";
             }
+
+            $_SESSION['sso_error'] = "Access Denied: User not found in local database.";
             $stmt->close();
-        } else {
-            $error = "Could not retrieve email from identity provider.";
         }
     } else {
-        $error = "Failed to authenticate with SSO.";
+        $_SESSION['sso_error'] = "Failed to authenticate with SSO.";
     }
+
+    // Back to a clean login URL: refreshing must not replay the used code.
+    header('Location: index.php');
+    exit;
 }
 
-// 3. Generate Login URL
-$loginUrl = KEYCLOAK_BASE_URL . "/realms/" . KEYCLOAK_REALM . "/protocol/openid-connect/auth" .
-    "?client_id=" . KEYCLOAK_CLIENT_ID .
-    "&response_type=code" .
-    "&redirect_uri=" . urlencode(KEYCLOAK_REDIRECT_URI) .
-    "&scope=openid email profile";
+// 4. Render the login page (last SSO error is shown once, then cleared)
+$error = $_SESSION['sso_error'] ?? null;
+unset($_SESSION['sso_error']);
+
+$loginUrl = keycloak_login_url();
+$logoutUrl = keycloak_logout_url(
+    isset($_SESSION['id_token']) && is_string($_SESSION['id_token']) ? $_SESSION['id_token'] : null
+);
 
 ?>
 <!DOCTYPE html>
@@ -126,10 +171,17 @@ $loginUrl = KEYCLOAK_BASE_URL . "/realms/" . KEYCLOAK_REALM . "/protocol/openid-
             <h1>DDNS Manager</h1>
             <p class="mb-4" style="color: #94a3b8;">Secure Access Control</p>
 
-            <?php if (isset($error)): ?>
+            <?php if ($error): ?>
                 <div class="alert alert-error">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
+                <p class="mb-4" style="color: #94a3b8;">
+                    You are still signed in to the identity provider. Sign out first to use a different account.
+                </p>
+                <a href="<?php echo htmlspecialchars($logoutUrl); ?>" class="btn btn-danger"
+                    style="width: 100%; box-sizing: border-box; margin-bottom: 0.75rem;">
+                    Sign out of SSO and try another account
+                </a>
             <?php endif; ?>
 
             <a href="<?php echo htmlspecialchars($loginUrl); ?>" class="btn"

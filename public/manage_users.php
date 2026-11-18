@@ -6,6 +6,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 }
 
 include '../dbconfig.php';
+require_once __DIR__ . '/sso.php';
 
 // Fetch the logged-in user's ID and username
 $logged_in_user_id = $_SESSION['id'];
@@ -24,6 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_user'])) {
         // Check if the username is a valid email address
         if (!filter_var($username, FILTER_VALIDATE_EMAIL)) {
             $error = "Invalid email address.";
+        } elseif (!sso_email_allowed($username)) {
+            $error = "This email is not allowed by RESTRICT_USERS and would not be able to sign in with SSO.";
         } else {
             // Check if the user already exists
             $check_sql = "SELECT id FROM users WHERE username = ?";
@@ -102,6 +105,13 @@ if ($result = $link->query($sql)) {
         <?php endif; ?>
         <?php if (isset($success)): ?>
             <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+        <?php endif; ?>
+
+        <?php if (trim(RESTRICT_USERS) !== ''): ?>
+            <div class="alert alert-success">
+                SSO access is restricted by <code>RESTRICT_USERS</code> to:
+                <?php echo htmlspecialchars(RESTRICT_USERS); ?>
+            </div>
         <?php endif; ?>
 
         <div class="card">

@@ -4,6 +4,7 @@
         "aws/aws-sdk-php": "^3.0"
     },
     "scripts": {
-        "lint": "find public dbconfig.php -name '*.php' -print0 | xargs -0 -n1 php -l"
+        "lint": "find public dbconfig.php -name '*.php' -print0 | xargs -0 -n1 php -l",
+        "test": "php tests/sso_helpers_test.php"
     }
 }

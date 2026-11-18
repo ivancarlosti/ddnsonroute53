@@ -12,6 +12,12 @@ define('KEYCLOAK_CLIENT_ID', getenv('KEYCLOAK_CLIENT_ID') ?: 'myclient');
 define('KEYCLOAK_CLIENT_SECRET', getenv('KEYCLOAK_CLIENT_SECRET') ?: 'mysecret');
 define('KEYCLOAK_REDIRECT_URI', getenv('KEYCLOAK_REDIRECT_URI') ?: 'http://localhost/index.php');
 
+// Optional SSO allow-list: comma/space/semicolon separated e-mail addresses
+// and/or domains allowed to sign in through Keycloak, e.g.
+//   RESTRICT_USERS=admin@example.com,ops@example.com,example.org
+// Empty (default) = any user present in the local `users` table may sign in.
+define('RESTRICT_USERS', getenv('RESTRICT_USERS') ?: '');
+
 
 // Create the connection; mysqli throws since PHP 8.1, so catch it and keep
 // $link null-safe for the guards in the calling scripts.
